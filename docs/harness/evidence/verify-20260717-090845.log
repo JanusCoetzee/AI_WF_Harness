@@ -1,0 +1,12 @@
+verify loop @ 891e2c2 — 2026-07-16T23:08:45Z
+  > typecheck  python3 -m py_compile app/server.py
+  ✓ typecheck  ok (0s)
+  > lint       bash -n scripts/verify.sh scripts/gate-check.sh scripts/evidence-bundle.sh scripts/hooks/*.sh
+  ✓ lint       ok (0s)
+  > test       .venv/bin/python -m pytest -q tests/
+.........                                                                [100%]
+9 passed in 0.51s
+  ✓ test       ok (1s)
+  ~ eval       skipped (not configured)
+  ~ build      skipped (not configured)
+verify: ALL GREEN

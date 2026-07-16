@@ -90,6 +90,13 @@ def catalog() -> list[dict]:
     return sections
 
 
+def _counts(sections: list[dict]) -> tuple[int, int]:
+    """(documents, skills) — single source for UI and /api/health (CHG-001.2)."""
+    docs = sum(len(s["items"]) for s in sections if s["key"] != "skills")
+    skills = sum(len(s["items"]) for s in sections if s["key"] == "skills")
+    return docs, skills
+
+
 def _find(section_key: str, slug: str) -> tuple[dict, dict]:
     for section in catalog():
         if section["key"] == section_key:
@@ -122,11 +129,11 @@ BROWNFIELD = [
 def index():
     sections = catalog()
     skills = next((s["items"] for s in sections if s["key"] == "skills"), [])
-    doc_count = sum(len(s["items"]) for s in sections if s["key"] != "skills")
+    doc_count, skill_count = _counts(sections)
     return render_template(
         "index.html", sections=sections, skills=skills,
         greenfield=GREENFIELD, brownfield=BROWNFIELD,
-        doc_count=doc_count, skill_count=len(skills),
+        doc_count=doc_count, skill_count=skill_count,
         active=None,
     )
 
@@ -157,12 +164,8 @@ def api_catalog():
 @app.route("/api/health")
 def api_health():
     # CHG-001.1: counts derive from the same live catalog scan the UI serves.
-    sections = catalog()
-    return jsonify({
-        "status": "ok",
-        "documents": sum(len(s["items"]) for s in sections if s["key"] != "skills"),
-        "skills": sum(len(s["items"]) for s in sections if s["key"] == "skills"),
-    })
+    docs, skills = _counts(catalog())
+    return jsonify({"status": "ok", "documents": docs, "skills": skills})
 
 
 if __name__ == "__main__":

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ item.title }} — AI Workflow Harness{% endblock %}
+{% block content %}
+<div class="breadcrumb">
+  <a href="/">Harness</a> <span class="arrow">→</span>
+  <span>{{ section.label }}</span> <span class="arrow">→</span>
+  <strong>{{ item.title }}</strong>
+</div>
+<article class="doc">
+  {{ body | safe }}
+</article>
+<footer class="doc-footer">source: <code>{{ item.path }}</code></footer>
+{% endblock %}

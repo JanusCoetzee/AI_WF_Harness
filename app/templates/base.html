@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}AI Workflow Harness{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="sidebar">
+    <a class="brand" href="/">AI&nbsp;Workflow<br>Harness</a>
+    {% for s in sections %}
+    <div class="nav-group">
+      <h3>{{ s.label }}</h3>
+      {% for item in s['items'] %}
+      <a href="/s/{{ s.key }}/{{ item.slug }}"
+         class="{{ 'active' if active and active[0] == s.key and active[1] == item.slug }}">
+        {{ item.title }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endfor %}
+    <div class="nav-group">
+      <h3>API</h3>
+      <a href="/api/catalog">/api/catalog</a>
+    </div>
+  </nav>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

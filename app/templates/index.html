@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="hero">
+  <h1>AI Workflow Harness</h1>
+  <p>Ideation to deployment in partnership with an LLM — evidence-gated, risk-tiered,
+     built for a Principal engineer in a regulated institution.</p>
+</header>
+
+<section class="pipeline">
+  <h2>Greenfield / project-sized</h2>
+  <div class="flow">
+    {% for label, kind, link in greenfield %}
+      {% if link %}<a class="chip {{ kind }}" href="/s/{{ link }}">{{ label }}</a>
+      {% else %}<span class="chip {{ kind }}">{{ label }}</span>{% endif %}
+      {% if not loop.last %}<span class="arrow">→</span>{% endif %}
+    {% endfor %}
+  </div>
+
+  <h2>Brownfield fast path <span class="muted">— most day-to-day work</span></h2>
+  <div class="flow">
+    {% for label, kind, link in brownfield %}
+      {% if link %}<a class="chip {{ kind }}" href="/s/{{ link }}">{{ label }}</a>
+      {% else %}<span class="chip {{ kind }}">{{ label }}</span>{% endif %}
+      {% if not loop.last %}<span class="arrow">→</span>{% endif %}
+    {% endfor %}
+    <span class="muted">rejoins the same back half; escalation triggers exit to G1/G2</span>
+  </div>
+</section>
+
+<section>
+  <h2>Skills</h2>
+  <div class="cards">
+    {% for sk in skills %}
+    <a class="card" href="/s/skills/{{ sk.slug }}">
+      <h3>{{ sk.title }}</h3>
+      <p>{{ sk.desc }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section>
+  <h2>Library</h2>
+  <div class="cards">
+    {% for s in sections if s.key != 'skills' %}
+    <a class="card slim" href="/s/{{ s.key }}/{{ s['items'][0].slug }}">
+      <h3>{{ s.label }}</h3>
+      <p>{{ s['items'] | length }} document{{ 's' if s['items'] | length != 1 }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

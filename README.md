@@ -52,6 +52,17 @@ AI_WF_Harness/
     └── hooks/bash-guard.sh← blocks destructive commands at the tool layer
 ```
 
+## Harness browser (UI)
+
+A small Flask app renders the whole harness — pipeline map, stages, gates,
+templates, skills, config — as a browsable UI, scanning the repo live so edits
+show up on refresh. JSON catalog at `/api/catalog`.
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -r app/requirements.txt
+.venv/bin/python app/server.py     # → http://localhost:5050
+```
+
 ## Quickstart (adopting the harness in a project)
 
 1. Copy `CLAUDE.md`, `.claude/`, `scripts/`, and `harness.config.yaml` into your repo (or reference this repo as a submodule).

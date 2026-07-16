@@ -14,6 +14,12 @@ it earns that compression by being honest about **escalation triggers**.
 A ticket, a bug report, an ask — with a **named source**. "Someone mentioned" is not
 a source.
 
+**The ticket must be correct before the code is touched.** If the inbound Jira/GitHub
+ticket is vague, the first act of intake is repairing it to the `templates/ISSUE.md`
+standard (`/harness-issues` Mode B) and posting the repair back to the ticket — the
+shared artifact gets fixed, not a private copy. Where a real ticket exists, its key
+is the change ID: use `FIN-4821` / `#123` throughout, not a parallel `CHG-###`.
+
 ## LLM role
 
 - Create `docs/harness/changes/CHG-###/CHANGE.md` (next free number) from the template.

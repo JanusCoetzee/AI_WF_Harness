@@ -55,6 +55,12 @@ typecheck → lint → unit tests → evals (if AI feature) → build
 - Requirements carry `REQ-###` IDs from the PRD — or `CHG-###` on the brownfield
   fast path. Reference the relevant IDs in: commit messages, test names/descriptions,
   ADRs, and PR descriptions.
+- **The ticket is the prompt.** Work items in Jira/GitHub must meet the Definition
+  of Ready in `templates/ISSUE.md` — a self-contained vertical slice passing the
+  fresh-session test. If a ticket you're handed is too vague to build from, the
+  first act is repairing the ticket (`/harness-issues` Mode B), not writing code.
+- Where a real ticket exists, its key **is** the ID: use `FIN-4821` / `#123` in
+  commits and PRs rather than inventing a parallel `CHG-###`.
 - Every non-obvious technical decision gets an ADR (`templates/ADR.md`) — including
   decisions *you* recommended. "The AI suggested it" is not an audit trail.
 - Append significant decisions, overrides, and gate passages to
@@ -102,5 +108,7 @@ typecheck → lint → unit tests → evals (if AI feature) → build
 ## Slash commands
 
 `/harness-status` `/harness-ideate` `/harness-prd` `/harness-adr` `/harness-plan`
-`/harness-build` `/harness-review` `/harness-secure` `/harness-release` `/harness-retro`
-Brownfield fast path: `/harness-change` `/harness-recon`
+`/harness-issues` `/harness-build` `/harness-review` `/harness-secure`
+`/harness-release` `/harness-retro`
+Brownfield fast path: `/harness-change` `/harness-recon` (with `/harness-issues`
+Mode B for repairing vague inbound tickets)

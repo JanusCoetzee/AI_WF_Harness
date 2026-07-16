@@ -8,8 +8,12 @@ description: Brownfield fast path entry (Stage B0) — frame a change to existin
 Playbook: `stages/B0-change-intake.md`. Template: `templates/CHANGE.md`. Exit: GC
 (jointly with `/harness-recon`).
 
-1. Allocate the next `CHG-###` (check `docs/harness/changes/`) and create
-   `docs/harness/changes/CHG-###/CHANGE.md` from the template.
+0. **Ticket first.** If the inbound Jira/GitHub ticket is too vague to build from,
+   repair it via `/harness-issues` Mode B and post the repair back — the ticket must
+   be correct before anything else happens. Where a real ticket exists, its key IS
+   the change ID (`FIN-4821`, `#123`); only invent a `CHG-###` when no ticket exists.
+1. Create `docs/harness/changes/<ID>/CHANGE.md` from the template (ID = ticket key,
+   or next free `CHG-###` from `docs/harness/changes/`).
 2. Interrogate the ask down to a two-sentence intent with a **named source**.
    For a bug: the first acceptance criterion is the failing case, as a test.
    Number criteria `CHG-###.n` — commits and tests will reference them.

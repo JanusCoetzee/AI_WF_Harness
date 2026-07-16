@@ -58,12 +58,13 @@ AI_WF_Harness/
 2. Edit `harness.config.yaml`: set the project's default risk tier and wire the `verify` commands to your real toolchain.
 3. Create `docs/harness/` in your repo — all working artifacts (PRD, ADRs, plans, gate evidence) live there, versioned with the code.
 4. Start a session: `/harness-status` tells you (and the LLM) which stage you're in and what the next gate demands.
-5. Work the stages. **New build:** `/harness-ideate` → `/harness-prd` → `/harness-adr` → `/harness-plan` → `/harness-build` → `/harness-review` → `/harness-secure` → `/harness-release` → `/harness-retro`. **Change to existing code (most work):** `/harness-change` → `/harness-recon` → `/harness-build` → same back half.
+5. Work the stages. **New build:** `/harness-ideate` → `/harness-prd` → `/harness-adr` → `/harness-plan` → `/harness-issues` → `/harness-build` → `/harness-review` → `/harness-secure` → `/harness-release` → `/harness-retro`. **Change to existing code (most work):** `/harness-change` (repairing the inbound ticket first via `/harness-issues` if it's vague) → `/harness-recon` → `/harness-build` → same back half.
 
 ## Non-negotiables
 
 1. **No gate skipping.** A stage's outputs don't exist until the gate's evidence exists in the repo.
-2. **Traceability or it didn't happen.** Every requirement gets a `REQ-###` ID at G1 (or `CHG-###` on the fast path); every commit, test, and ADR references the IDs it serves.
-3. **The AI never approves its own work.** Human review is a gate condition, not a courtesy.
-4. **Verify loop after every change.** Not at the end of the day — after every change.
-5. **Nothing classified above `Internal` enters a prompt** without an approved data-handling exception (see `docs/OPERATING-MODEL.md`).
+2. **Traceability or it didn't happen.** Every requirement gets a `REQ-###` ID at G1 (or the ticket key / `CHG-###` on the fast path); every commit, test, and ADR references the IDs it serves.
+3. **The ticket is the prompt.** Work is built from Jira/GitHub issues that meet the Definition of Ready (`templates/ISSUE.md`): self-contained vertical slices, correct at birth. A vague ticket gets repaired before any code is written.
+4. **The AI never approves its own work.** Human review is a gate condition, not a courtesy.
+5. **Verify loop after every change.** Not at the end of the day — after every change.
+6. **Nothing classified above `Internal` enters a prompt** without an approved data-handling exception (see `docs/OPERATING-MODEL.md`).

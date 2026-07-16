@@ -52,7 +52,7 @@ After GC: standard pipeline from Stage 04 — G4, G5, G6, G7 apply per tier.
 
 | | |
 | --- | --- |
-| Evidence | `PLAN.md`: milestones each ending runnable with a stated **demo command**; tasks ≤ half a day; every task maps to `REQ-###`; test strategy per milestone |
+| Evidence | `PLAN.md`: milestones each ending runnable with a stated **demo command**; tasks ≤ half a day; every task maps to `REQ-###`; test strategy per milestone; where a ticketing system is in use, tasks externalized as issues meeting the **Definition of Ready** (`templates/ISSUE.md`) with ticket keys written back into PLAN.md |
 | Approver | Driver |
 | Fails if | A milestone has no demo; a task is "misc" or unmapped; plan exceeds ~2 weeks without a re-planning checkpoint |
 

@@ -3,6 +3,7 @@
 # artifacts exist (and are non-trivially filled) before a gate can be approved.
 # Human approval + DECISIONS.log entry are still required; this only checks (a).
 # Usage: scripts/gate-check.sh G0|G1|G2|G3|G4|G5|G6|G7
+#        scripts/gate-check.sh GC [CHG-###]   (brownfield fast path; defaults to newest change)
 set -uo pipefail
 
 H="${HARNESS_DIR:-docs/harness}"
@@ -13,7 +14,7 @@ need_file() {
   local f="$1" why="$2"
   if [[ ! -s "$f" ]]; then
     echo "  ✗ missing: $f  ($why)"; FAILS=$((FAILS+1))
-  elif grep -qE 'CHANGE_ME|<work item name>|<name>' "$f"; then
+  elif grep -qE 'CHANGE_ME|<work item name>|<name>|CHG-###' "$f"; then
     echo "  ✗ unfilled template: $f  ($why)"; FAILS=$((FAILS+1))
   else
     echo "  ✓ $f"
@@ -31,6 +32,31 @@ need_grep() {
 
 echo "gate-check $GATE (evidence dir: $H)"
 case "$GATE" in
+  GC)
+    CHG="${2:-}"
+    if [[ -z "$CHG" ]]; then
+      CHG="$(ls -t "$H/changes" 2>/dev/null | head -1 || true)"
+      [[ -z "$CHG" ]] && { echo "  ✗ no changes in $H/changes/ (run /harness-change first)"; exit 1; }
+      echo "  (no change id given — checking newest: $CHG)"
+    fi
+    C="$H/changes/$CHG"
+    need_file "$C/CHANGE.md" "one-page intake: intent, tier, acceptance, blast radius"
+    need_grep 'T[123]' "$C/CHANGE.md" "risk tier must be assigned to the change"
+    need_grep "$CHG\.[0-9]" "$C/CHANGE.md" "numbered acceptance criteria required"
+    need_grep '[Bb]last radius' "$C/CHANGE.md" "blast-radius estimate required"
+    need_grep '[Rr]ollback' "$C/CHANGE.md" "rollback note required"
+    if grep -qi 'waived-trivial' "$C/CHANGE.md"; then
+      echo "  ~ recon waived as trivial (waiver must state a reason in CHANGE.md)"
+    else
+      need_file "$C/RECON.md" "code map, consumers, implicit contracts, characterization tests"
+      need_grep '[Gg]o' "$C/RECON.md" "go/no-go recommendation required"
+    fi
+    if grep -qE '\|[[:space:]]*[Yy]es[[:space:]]*\|' "$C/CHANGE.md"; then
+      echo "  ✗ an escalation trigger is answered 'yes' — fast path exits to the full workflow"; FAILS=$((FAILS+1))
+    else
+      echo "  ✓ no escalation triggers tripped"
+    fi
+    ;;
   G0)
     need_file "$H/IDEA.md" "problem statement + kill criteria + tier"
     need_grep 'T[123]' "$H/IDEA.md" "risk tier must be assigned"
@@ -75,7 +101,7 @@ case "$GATE" in
     need_file "$H/RELEASE-CHECKLIST.md" "filled release checklist incl. rollback rehearsal"
     ;;
   *)
-    echo "usage: $0 G0|G1|G2|G3|G4|G5|G6|G7" >&2; exit 64 ;;
+    echo "usage: $0 G0|G1|G2|G3|G4|G5|G6|G7 | GC [CHG-###]" >&2; exit 64 ;;
 esac
 
 echo

@@ -6,6 +6,24 @@ verifies (a) mechanically. Which gates apply depends on risk tier (`harness.conf
 
 **Skipping a gate is an incident, not a shortcut.** Overrides are allowed — logged, with a reason.
 
+Two entry paths share the back half of the pipeline:
+
+- **Greenfield / project-sized:** G0 → G1 → G2 → G3 → build → G4 → G5 → G6 → G7.
+- **Brownfield fast path** (most day-to-day work on existing code): **GC** replaces
+  G0–G3, then rejoins at build → G4 → G5 → G6 → G7 per tier. See stages B0/B1.
+  Any tripped escalation trigger in `CHANGE.md` exits the fast path into the full
+  workflow at the gate named there.
+
+## GC — Change Ratified (brownfield fast path; replaces G0–G3)
+
+| | |
+| --- | --- |
+| Evidence | `docs/harness/changes/CHG-###/CHANGE.md`: named source, tier with rationale, testable `CHG-###.n` acceptance criteria, blast radius, rollback note, all four escalation triggers answered; `RECON.md` with code map (file:line cited), consumer inventory, implicit-contract table, and **characterization tests green against unchanged code** — recon waivable only for docs/typo-level trivia, waiver written in CHANGE.md |
+| Approver | Driver (T2/T3); Driver + one peer (T1) |
+| Fails if | Any blast-radius row reads "unknown"; an escalation trigger is "yes" but not escalated; touched path has thin coverage and no characterization tests; behavior claims without file:line evidence |
+
+After GC: standard pipeline from Stage 04 — G4, G5, G6, G7 apply per tier.
+
 ## G0 — Idea Approved (Ideate → Discover)
 
 | | |

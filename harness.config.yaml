@@ -39,6 +39,20 @@ risk_tiers:
       note: Promoting T3 code to T1/T2 restarts the workflow at G1.
 
 # ---------------------------------------------------------------------------
+# Brownfield fast path (stages B0/B1, gate GC) — most day-to-day work.
+# GC replaces G0-G3; the pipeline rejoins at Stage 04 (G4..G7 per tier).
+# ---------------------------------------------------------------------------
+change_path:
+  changes_dir: docs/harness/changes   # one dir per CHG-###: CHANGE.md + RECON.md
+  recon_waivable: docs/typo-level only; waiver reason recorded in CHANGE.md
+  effort_ceiling_days: 3              # beyond this after recon -> escalate to G1
+  escalation_triggers:                # any "yes" exits the fast path
+    - new external interface, data flow, or LLM touchpoint -> enter at G2
+    - decision deviating from the codebase's existing pattern -> ADR before build
+    - effort beyond ceiling -> enter at G1 (full PRD)
+    - tier raised during recon -> re-approve intake at the new tier
+
+# ---------------------------------------------------------------------------
 # The verify loop. scripts/verify.sh runs these in order, fails fast.
 # Empty string = skip step. Keep each step under ~2 minutes or split the suite.
 # ---------------------------------------------------------------------------

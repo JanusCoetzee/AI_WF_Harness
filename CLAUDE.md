@@ -11,6 +11,9 @@ Before doing substantive work in a session:
 1. Read `docs/harness/STATE.md` (current stage, active work item, risk tier).
    If it doesn't exist, offer to run `/harness-status` to initialize it.
 2. Identify which gate is next and what evidence it requires (`gates/GATES.md`).
+   Two entry paths exist: the full workflow (G0–G3) for project-sized work, and the
+   **brownfield fast path** (`/harness-change` → `/harness-recon` → gate GC) for
+   changes to existing code — which is most work. Both rejoin at Stage 04.
 3. If the user asks for work that belongs to a *later* stage than the current one,
    say so explicitly and name the missing gate. Proceed only if the user overrides —
    and record the override in `docs/harness/DECISIONS.log`.
@@ -49,8 +52,9 @@ typecheck → lint → unit tests → evals (if AI feature) → build
 
 ## 5. Traceability (FinServ rules)
 
-- Requirements carry `REQ-###` IDs from the PRD. Reference the relevant IDs in:
-  commit messages, test names/descriptions, ADRs, and PR descriptions.
+- Requirements carry `REQ-###` IDs from the PRD — or `CHG-###` on the brownfield
+  fast path. Reference the relevant IDs in: commit messages, test names/descriptions,
+  ADRs, and PR descriptions.
 - Every non-obvious technical decision gets an ADR (`templates/ADR.md`) — including
   decisions *you* recommended. "The AI suggested it" is not an audit trail.
 - Append significant decisions, overrides, and gate passages to
@@ -72,7 +76,22 @@ typecheck → lint → unit tests → evals (if AI feature) → build
   session* for *that specific action*.
 - When asked to self-review, do it adversarially: hunt for reasons to fail the work.
 
-## 8. When blocked or uncertain
+## 8. Working in existing code (brownfield)
+
+- **Understand before changing**: recon precedes edits. Every claim about existing
+  behavior cites `file:line` or a test — never memory or plausibility.
+- Where the touched path has thin coverage, **pin current behavior with
+  characterization tests first** — including behavior that looks wrong. Pin it,
+  propose the fix separately; don't fold it into the current change.
+- Respect implicit contracts (ordering, rounding, error shapes, timezones): whether
+  one is safe to change is the human's call, because the consumers that matter are
+  often outside the repo.
+- Retroactive documentation only for what you touch: a significant undocumented
+  decision you encounter gets a status-quo ADR; no estate-wide archaeology.
+- Match the surrounding code's style and patterns; a deviation from the local
+  pattern is a decision, and decisions need ADRs.
+
+## 9. When blocked or uncertain
 
 - Ambiguous requirement → check the PRD first; if still ambiguous, ask, and record the
   answer in the PRD (requirements live in documents, not chat history).
@@ -84,3 +103,4 @@ typecheck → lint → unit tests → evals (if AI feature) → build
 
 `/harness-status` `/harness-ideate` `/harness-prd` `/harness-adr` `/harness-plan`
 `/harness-build` `/harness-review` `/harness-secure` `/harness-release` `/harness-retro`
+Brownfield fast path: `/harness-change` `/harness-recon`

@@ -1,0 +1,27 @@
+---
+name: harness-change
+description: Brownfield fast path entry (Stage B0) — frame a change to existing code in a one-page CHANGE.md with tier, testable acceptance criteria, blast radius, and escalation triggers, targeting gate GC. Use for bug fixes, small features, config changes, and dependency bumps on existing platforms.
+---
+
+# harness-change
+
+Playbook: `stages/B0-change-intake.md`. Template: `templates/CHANGE.md`. Exit: GC
+(jointly with `/harness-recon`).
+
+1. Allocate the next `CHG-###` (check `docs/harness/changes/`) and create
+   `docs/harness/changes/CHG-###/CHANGE.md` from the template.
+2. Interrogate the ask down to a two-sentence intent with a **named source**.
+   For a bug: the first acceptance criterion is the failing case, as a test.
+   Number criteria `CHG-###.n` — commits and tests will reference them.
+3. Tier **the change, not the codebase**: a typo fix in a payments repo isn't T1;
+   a "small" retry tweak on a money-moving path is. Rationale goes in the doc.
+4. Draft the blast-radius estimate (modules, consumers, data + classification,
+   deploy surface) and the rollback note — "revert the commit" only with the
+   justification the template demands.
+5. Answer all four **escalation triggers** honestly. Any "yes" → recommend exiting
+   to the full workflow at the named gate; that's the fast path succeeding.
+6. Recon is next (`/harness-recon`) unless the change is docs/typo-level trivia —
+   then mark `waived-trivial` with a written reason.
+7. Update `STATE.md` (stage B0, active change). State what GC needs:
+   `scripts/gate-check.sh GC CHG-###`, sign-off per tier (T1 adds a peer on the
+   intake), `DECISIONS.log` line. You approve nothing.

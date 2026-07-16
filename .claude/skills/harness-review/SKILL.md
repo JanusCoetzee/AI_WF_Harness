@@ -16,6 +16,9 @@ Precondition: G4 evidence exists (`scripts/gate-check.sh G4`).
      check the lockfile, don't trust memory.
    - Unvalidated boundaries: any external or LLM data crossing without its schema.
    - REQ drift: diff hunks serving no REQ (silent scope), REQs with no tests.
+   - Standards breaches (`docs/STANDARDS.md`): thresholds the tools measure are
+     verify's job, but the `manual (G5)` rows — contract-first API changes,
+     schema-validated AI boundaries — are checked here, explicitly.
    - Rank findings by severity, each with a concrete failure scenario. No praise
      padding — zero findings means say "no findings above <bar>", not compliments.
 2. **Traceability spot-check**: pick 3 REQs at random, walk each to code + tests +

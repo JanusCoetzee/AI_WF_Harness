@@ -64,6 +64,19 @@ verify:
   build:     "npm run build --if-present"
 
 # ---------------------------------------------------------------------------
+# Engineering standards thresholds — single source of the numbers.
+# Human-readable register with enforcement mapping: docs/STANDARDS.md.
+# Tool configs (JaCoCo/PIT, coverage.py/mutmut, vitest/Stryker, ruff/eslint,
+# dependency-check/pip-audit/npm-audit) implement these; change both together.
+# ---------------------------------------------------------------------------
+standards:
+  coverage_changed_lines_min_pct: 80     # STD-001
+  mutation_score_min_pct: 80             # STD-002 (incremental/nightly mode ok)
+  cognitive_complexity_max: 12           # STD-003
+  dependency_vuln_block_at: high         # STD-004: high and critical block
+  waiver_requires: [expiry_date, owner, DECISIONS.log entry]
+
+# ---------------------------------------------------------------------------
 # Data classification ceiling for prompt content. See docs/OPERATING-MODEL.md.
 # ---------------------------------------------------------------------------
 data:

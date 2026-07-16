@@ -60,7 +60,7 @@ After GC: standard pipeline from Stage 04 — G4, G5, G6, G7 apply per tier.
 
 | | |
 | --- | --- |
-| Evidence | Verify loop green (`scripts/verify.sh` output committed to `docs/harness/evidence/`); eval scores ≥ thresholds; every milestone demo recorded (command + observed result in PLAN.md); no `UNVERIFIED` items outstanding |
+| Evidence | Verify loop green (`scripts/verify.sh` output committed to `docs/harness/evidence/`); **standards thresholds met** (`docs/STANDARDS.md`: changed-line coverage, mutation score, complexity ceiling); eval scores ≥ thresholds; every milestone demo recorded (command + observed result in PLAN.md); no `UNVERIFIED` items outstanding |
 | Approver | Driver |
 | Fails if | Tests weakened to pass; coverage on changed lines regressed; demo skipped |
 
@@ -76,7 +76,7 @@ After GC: standard pipeline from Stage 04 — G4, G5, G6, G7 apply per tier.
 
 | | |
 | --- | --- |
-| Evidence | Secret scan clean; dependency audit clean or exceptions logged; threat-model delta reviewed against what was actually built; data-handling confirmed (no real data in fixtures/logs); change record raised (T1/T2) |
+| Evidence | Secret scan clean (STD-005); dependency audit at the STD-004 severity gate — no High/Critical, or waivers with expiry + owner; threat-model delta reviewed against what was actually built; data-handling confirmed (no real data in fixtures/logs); change record raised (T1/T2) |
 | Approver | Risk/Sec partner (T1); Driver with checklist (T2) |
 | Fails if | Any Critical/High finding unremediated and unwaived |
 

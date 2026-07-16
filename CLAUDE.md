@@ -28,6 +28,11 @@ typecheck → lint → unit tests → evals (if AI feature) → build
 ```
 
 - Never report a step as done unless verify passed. If it failed, show the failure.
+- **Standards are failing conditions, not review feedback.** Read `docs/STANDARDS.md`
+  (thresholds in `harness.config.yaml` `standards:`) and write to them from the
+  start — coverage on changed lines, cognitive complexity ceilings, dependency
+  severity limits. Never propose a dependency version carrying a High/Critical
+  vulnerability; check before adding, not at G6.
 - Prefer changes small enough that a failed verify has one plausible cause.
 - If you cannot run verification (missing tool, no test), say so and mark the change
   `UNVERIFIED` in your summary. Do not let silence imply green.

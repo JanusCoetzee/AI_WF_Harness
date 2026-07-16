@@ -1,0 +1,119 @@
+# Ground truth — greenfield payment-exception triage.
+# Written and frozen BEFORE any run. Encodes principal-grade expectations for
+# regulated FinServ delivery, deliberately including items the harness may not
+# yet elicit — that's what the eval is for.
+scenario: greenfield-payment-triage
+thresholds: { must_pct: 100, should_pct: 80 }
+checks:
+  - id: GF-01
+    level: MUST
+    desc: Risk tier T1 assigned with rationale (money-adjacent, Confidential data, regulatory timelines)
+    artifact: "IDEA.md"
+    pattern: 'T1'
+  - id: GF-02
+    level: MUST
+    desc: Kill criteria are observable/dated, not vibes
+    artifact: "IDEA.md"
+    pattern: '[Kk]ill criteria'
+  - id: GF-03
+    level: MUST
+    desc: Do-nothing steelman present
+    artifact: "IDEA.md"
+    pattern: '[Dd]o[- ]nothing'
+  - id: GF-04
+    level: MUST
+    desc: Functional requirements numbered REQ-0xx with Given/When/Then acceptance
+    artifact: "PRD.md"
+    pattern: 'REQ-0\d\d'
+    case: true
+  - id: GF-05
+    level: MUST
+    desc: AI behaviors captured as REQ-2xx with quality bars
+    artifact: "PRD.md"
+    pattern: 'REQ-2\d\d'
+    case: true
+  - id: GF-06
+    level: MUST
+    desc: Explicit non-goals
+    artifact: "PRD.md"
+    pattern: '[Nn]on-goals'
+  - id: GF-07
+    level: MUST
+    desc: Data inventory classifies remittance text as Confidential
+    artifact: "PRD.md"
+    pattern: 'remittance.*Confidential|Confidential.*remittance'
+  - id: GF-08
+    level: MUST
+    desc: PII/prompt ceiling addressed — redaction/masking before any LLM call
+    artifact: "PRD.md"
+    pattern: 'redact|mask|tokeni[sz]e'
+  - id: GF-09
+    level: MUST
+    desc: Regulatory & reporting impact assessed (sanctions timelines, ops-resilience, audit trail of automated decisions)
+    artifact: "PRD.md"
+    pattern: '[Rr]egulatory (impact|&|and) |[Rr]egulatory.*(assessment|impact)'
+  - id: GF-10
+    level: SHOULD
+    desc: Reconciliation/control-total requirement (no exception lost between hub, triage, and case tool)
+    artifact: "PRD.md"
+    pattern: 'control total|reconcil'
+  - id: GF-11
+    level: MUST
+    desc: ADRs present with at least two genuine options each
+    artifact: "adr/*.md"
+    pattern: 'Option B'
+  - id: GF-12
+    level: MUST
+    desc: Threat model includes AI-specific threats — prompt injection via remittance text
+    artifact: "THREAT-MODEL.md"
+    pattern: '[Pp]rompt injection'
+  - id: GF-13
+    level: MUST
+    desc: Threat model covers excessive agency / least agency for the model
+    artifact: "THREAT-MODEL.md"
+    pattern: 'agency'
+  - id: GF-14
+    level: MUST
+    desc: Eval spec has numeric thresholds agreed pre-build
+    artifact: "EVAL-SPEC.md"
+    pattern: '\d\d%'
+  - id: GF-15
+    level: MUST
+    desc: Injection-resistance scored on an adversarial set at 100%
+    artifact: "EVAL-SPEC.md"
+    pattern: 'injection.*100%|100%.*injection'
+  - id: GF-16
+    level: SHOULD
+    desc: Model registered / model-risk governance referenced (institutional model inventory)
+    artifact: "EVAL-SPEC.md"
+    pattern: 'model (inventory|risk|register)'
+  - id: GF-17
+    level: MUST
+    desc: Human-in-the-loop checkpoint for T1 — analyst accountable, AI proposes
+    artifact: "PRD.md"
+    pattern: 'human[- ]in[- ]the[- ]loop|analyst (approves|confirms|remains accountable)'
+  - id: GF-18
+    level: MUST
+    desc: Plan starts with M0 walking skeleton touching every layer
+    artifact: "PLAN.md"
+    pattern: 'M0.*(walking skeleton|skeleton)'
+  - id: GF-19
+    level: MUST
+    desc: Every milestone has a demo command
+    artifact: "PLAN.md"
+    pattern: '[Dd]emo command'
+  - id: GF-20
+    level: SHOULD
+    desc: Riskiest-assumption-first sequencing stated (classification quality proven before automation widens)
+    artifact: "PLAN.md"
+    pattern: 'riskiest|risk.*first|shadow'
+  - id: GF-21
+    level: MUST
+    desc: Issues drafted as vertical slices with layer table
+    artifact: "issues.md"
+    pattern: '[Vv]ertical slice'
+  - id: GF-22
+    level: SHOULD
+    desc: Issues carry Definition of Ready checks
+    artifact: "issues.md"
+    pattern: 'Definition of Ready|fresh-session'

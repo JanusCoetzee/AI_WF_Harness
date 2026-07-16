@@ -15,7 +15,10 @@ Precondition: G0 in `DECISIONS.log`. If absent, say so and offer `/harness-ideat
 2. Rewrite every requirement until **testable as written**: "fast" → "p95 < Nms at
    R rps"; "secure" → named controls. Given/When/Then for acceptance criteria.
 3. Hunt the unstated: error paths, empty states, concurrency, retention, timezones,
-   **rounding** (in finance, rounding is a requirement). Ask; don't invent — every
+   **rounding**, **reconciliation/control totals** (how do we prove nothing was lost
+   or double-processed?), and the **regulatory & reporting impact** table (which
+   regs/timelines, which reported figures, what audit trail for automated
+   decisions). In finance these are requirements, not details. Ask; don't invent — every
    REQ needs a named source, and a requirement no stakeholder asked for is scope
    creep with a serial number.
 4. Build the **data inventory** table: element, classification, source of truth,

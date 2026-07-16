@@ -24,8 +24,13 @@ Playbook: `stages/B0-change-intake.md`. Template: `templates/CHANGE.md`. Exit: G
    justification the template demands.
 5. Answer all four **escalation triggers** honestly. Any "yes" → recommend exiting
    to the full workflow at the named gate; that's the fast path succeeding.
-6. Recon is next (`/harness-recon`) unless the change is docs/typo-level trivia —
+6. Fill the FinServ-critical fields the template demands: **linked records** (does
+   this close an audit finding or incident? check, don't assume "none"), **timing
+   constraints** (freeze windows, batch/statement cycles), and **remediation of
+   past impact** — if the defect produced wrong figures or documents historically,
+   the disposition of the past is part of the change, not someone else's problem.
+7. Recon is next (`/harness-recon`) unless the change is docs/typo-level trivia —
    then mark `waived-trivial` with a written reason.
-7. Update `STATE.md` (stage B0, active change). State what GC needs:
+8. Update `STATE.md` (stage B0, active change). State what GC needs:
    `scripts/gate-check.sh GC CHG-###`, sign-off per tier (T1 adds a peer on the
    intake), `DECISIONS.log` line. You approve nothing.

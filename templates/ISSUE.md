@@ -13,6 +13,7 @@ heavy lifting:
 - Design constraints: ADR-### <one-line summary of the constraint, inline>
 - Parent plan / milestone: PLAN.md M_
 - Depends on: <ticket keys, or "nothing — independently shippable">
+- Linked records: <audit findings, incidents, regulatory items — or "none checked">
 
 ## Vertical slice — layers this cuts through
 

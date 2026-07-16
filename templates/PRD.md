@@ -45,6 +45,23 @@ Every requirement: numbered, testable as written, with a named source.
 | --- | --- | --- | --- |
 | REQ-201 | | eval `<name>` ≥ <threshold> | per tier |
 
+## Regulatory & reporting impact
+
+Mandatory in a regulated institution — "none" is a finding to justify, not a default.
+
+| Question | Answer |
+| --- | --- |
+| Which regulations/timelines does this touch (payments, sanctions, reporting, resilience)? | |
+| Does any figure produced here feed regulatory, tax, or financial reporting? | |
+| What audit trail must exist for automated or AI-influenced decisions? | |
+| Does this change what a customer sees or receives (statements, notices)? | |
+
+## Reconciliation & control totals
+
+For anything that moves, transforms, or counts records of value: how do we prove
+nothing was lost or double-processed between systems? Name the control (counts,
+hash totals, break reports) and the REQ that owns it.
+
 ## Data inventory
 
 Every data element touched. Anything above `Internal` cannot enter prompts without a logged exception.

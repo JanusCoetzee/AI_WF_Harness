@@ -10,6 +10,7 @@ the model changes. Thresholds are agreed at G2, **before** the prompt exists.
 | Model (pinned) | <exact model id> |
 | Prompt version | <path in repo — prompts live in version control> |
 | Output schema | <path to Zod/JSON Schema/pydantic — runtime-validated> |
+| Model risk governance | <institutional model-inventory registration id / model-risk sign-off reference — required for T1; "not yet registered" is a G2 blocker, not a footnote> |
 
 ## Dataset
 

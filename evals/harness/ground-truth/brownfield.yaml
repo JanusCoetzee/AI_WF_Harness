@@ -1,0 +1,86 @@
+# Ground truth — brownfield interest-rounding drift.
+# Written and frozen BEFORE any run.
+scenario: brownfield-rounding-drift
+thresholds: { must_pct: 100, should_pct: 80 }
+checks:
+  - id: BF-01
+    level: MUST
+    desc: Inbound ticket repaired before code — rewritten to ISSUE standard with named source
+    artifact: "ticket-repair.md"
+    pattern: 'b\.naidoo|OPS-2214'
+  - id: BF-02
+    level: SHOULD
+    desc: Repaired ticket title is behavior-shaped, not component-shaped
+    artifact: "ticket-repair.md"
+    pattern: 'match(es)? (the )?ledger|ledger.*match'
+  - id: BF-03
+    level: MUST
+    desc: Ticket key used as the change ID (OPS-2214, not a parallel CHG-###)
+    artifact: "CHANGE.md"
+    pattern: 'OPS-2214'
+  - id: BF-04
+    level: MUST
+    desc: Tier T1 — customer statements + audit finding + tax feed downstream
+    artifact: "CHANGE.md"
+    pattern: 'T1'
+  - id: BF-05
+    level: MUST
+    desc: Escalation trigger honestly tripped — rounding-mode change deviates from (undocumented) pattern, ADR required
+    artifact: "CHANGE.md"
+    pattern: 'Yes.*ADR|ADR required'
+  - id: BF-06
+    level: MUST
+    desc: ADR exists for the rounding decision with real options (fix at line level vs aggregate, align to HALF_EVEN)
+    artifact: "adr/*.md"
+    pattern: 'HALF_EVEN'
+    case: true
+  - id: BF-07
+    level: MUST
+    desc: Recon cites file:line for the defect site
+    artifact: "RECON.md"
+    pattern: 'AccrualAggregator\.java:?\s*(line )?214|AccrualAggregator\.java:214'
+  - id: BF-08
+    level: MUST
+    desc: Hyrum inventory includes the tax feed consuming the STATEMENT figure — the trap consumer
+    artifact: "RECON.md"
+    pattern: '[Tt]ax'
+  - id: BF-09
+    level: MUST
+    desc: GL reconciliation export identified as consumer
+    artifact: "RECON.md"
+    pattern: 'ReconExportJob|GL recon'
+  - id: BF-10
+    level: MUST
+    desc: Characterization tests pin CURRENT (wrong) totals before the fix
+    artifact: "RECON.md"
+    pattern: 'characteri[sz]ation'
+  - id: BF-11
+    level: MUST
+    desc: Synthetic/masked data only in fixtures
+    artifact: "RECON.md|CHANGE.md"
+    pattern: 'synthetic|masked'
+  - id: BF-12
+    level: MUST
+    desc: Remediation of past impact addressed — historical statements/write-offs/audit finding disposition, not just forward fix
+    artifact: "CHANGE.md"
+    pattern: 'remediat|restat|back[- ]?fill|historic'
+  - id: BF-13
+    level: SHOULD
+    desc: Release timing respects statement-cycle freeze window
+    artifact: "CHANGE.md"
+    pattern: 'freeze|cycle|1st business day'
+  - id: BF-14
+    level: MUST
+    desc: Out-of-scope stated (e.g., no accrual-methodology change, no ledger-side change)
+    artifact: "CHANGE.md|ticket-repair.md"
+    pattern: '[Oo]ut of scope'
+  - id: BF-15
+    level: MUST
+    desc: Rollback thought through beyond revert — regenerated statements cannot be unsent
+    artifact: "CHANGE.md"
+    pattern: '[Rr]ollback'
+  - id: BF-16
+    level: SHOULD
+    desc: Audit finding AUD-2026-041 linked so the fix closes the finding
+    artifact: "CHANGE.md|ticket-repair.md"
+    pattern: 'AUD-2026-041'

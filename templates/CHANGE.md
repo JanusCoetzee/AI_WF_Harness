@@ -11,6 +11,8 @@ a formatting problem.
 | Date | |
 | Risk tier | T_ — <rationale: money movement? data above Internal? regulatory? blast radius?> |
 | Recon | required / waived-trivial (docs/typo-level only; waiver reason: ___) |
+| Linked records | <audit findings, incidents, regulatory items this change closes or touches — e.g. AUD-####-###; "none" only after checking> |
+| Timing constraints | <freeze windows, batch/statement cycles, reporting deadlines that gate when this may deploy> |
 
 ## Intent
 
@@ -38,6 +40,14 @@ Testable as written. Commits, tests, and the PR reference `CHG-###`.
 
 How this change is undone if it's wrong. "Revert the commit" is acceptable only if
 there is no migration, no config change, and no consumer that adapts.
+
+## Remediation of past impact
+
+A fix changes the future; a bank also answers for the past. If the defect produced
+wrong figures, documents, reports, or customer outcomes before the fix: what is the
+disposition of the historical impact (restate / back-fill / customer communication /
+write-off closure / regulator notice / accepted as-is with owner)? "Forward-only"
+is a decision — name who made it.
 
 ## Escalation triggers — answer all four honestly
 

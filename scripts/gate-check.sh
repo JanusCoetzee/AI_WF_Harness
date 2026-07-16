@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# gate-check.sh — mechanical half of gate passage: asserts required evidence
+# artifacts exist (and are non-trivially filled) before a gate can be approved.
+# Human approval + DECISIONS.log entry are still required; this only checks (a).
+# Usage: scripts/gate-check.sh G0|G1|G2|G3|G4|G5|G6|G7
+set -uo pipefail
+
+H="${HARNESS_DIR:-docs/harness}"
+GATE="${1:-}"
+FAILS=0
+
+need_file() {
+  local f="$1" why="$2"
+  if [[ ! -s "$f" ]]; then
+    echo "  ✗ missing: $f  ($why)"; FAILS=$((FAILS+1))
+  elif grep -qE 'CHANGE_ME|<work item name>|<name>' "$f"; then
+    echo "  ✗ unfilled template: $f  ($why)"; FAILS=$((FAILS+1))
+  else
+    echo "  ✓ $f"
+  fi
+}
+
+need_grep() {
+  local pattern="$1" f="$2" why="$3"
+  if [[ -s "$f" ]] && grep -qE "$pattern" "$f"; then
+    echo "  ✓ $f contains /$pattern/"
+  else
+    echo "  ✗ $f lacks /$pattern/  ($why)"; FAILS=$((FAILS+1))
+  fi
+}
+
+echo "gate-check $GATE (evidence dir: $H)"
+case "$GATE" in
+  G0)
+    need_file "$H/IDEA.md" "problem statement + kill criteria + tier"
+    need_grep 'T[123]' "$H/IDEA.md" "risk tier must be assigned"
+    need_grep '[Kk]ill criteria' "$H/IDEA.md" "kill criteria required"
+    ;;
+  G1)
+    need_file "$H/PRD.md" "locked requirements"
+    need_grep 'REQ-[0-9]{3}' "$H/PRD.md" "numbered requirements are the traceability spine"
+    need_grep '[Nn]on-goals' "$H/PRD.md" "explicit non-goals required"
+    ;;
+  G2)
+    ls "$H"/adr/ADR-*.md >/dev/null 2>&1 \
+      && echo "  ✓ ADRs present: $(ls "$H"/adr/ADR-*.md | wc -l | tr -d ' ')" \
+      || { echo "  ✗ no ADRs in $H/adr/"; FAILS=$((FAILS+1)); }
+    need_file "$H/THREAT-MODEL.md" "per tier: full STRIDE or boundary table"
+    ;;
+  G3)
+    need_file "$H/PLAN.md" "ratified milestone plan"
+    need_grep 'M0' "$H/PLAN.md" "walking skeleton milestone required"
+    need_grep '[Dd]emo command' "$H/PLAN.md" "every milestone needs a demo command"
+    ;;
+  G4)
+    ls "$H"/evidence/verify-*.log >/dev/null 2>&1 \
+      && echo "  ✓ verify log(s) present" \
+      || { echo "  ✗ no verify logs in $H/evidence/ (run scripts/verify.sh --log)"; FAILS=$((FAILS+1)); }
+    if grep -qi 'UNVERIFIED' "$H/STATE.md" 2>/dev/null && ! grep -qiE 'UNVERIFIED items.*none' "$H/STATE.md"; then
+      echo "  ✗ STATE.md lists UNVERIFIED items"; FAILS=$((FAILS+1))
+    else
+      echo "  ✓ no outstanding UNVERIFIED items"
+    fi
+    ;;
+  G5)
+    need_file "$H/review-record.md" "human review record (names, tier-correct count)"
+    ;;
+  G6)
+    need_file "$H/secure-gate-record.md" "secret scan / dep audit / threat delta / data sweep results"
+    ;;
+  G7)
+    ls -d "$H"/evidence/*/ >/dev/null 2>&1 \
+      && echo "  ✓ evidence bundle dir present" \
+      || { echo "  ✗ no evidence bundle (run scripts/evidence-bundle.sh <version>)"; FAILS=$((FAILS+1)); }
+    need_file "$H/RELEASE-CHECKLIST.md" "filled release checklist incl. rollback rehearsal"
+    ;;
+  *)
+    echo "usage: $0 G0|G1|G2|G3|G4|G5|G6|G7" >&2; exit 64 ;;
+esac
+
+echo
+if [[ $FAILS -gt 0 ]]; then
+  echo "gate-check $GATE: FAIL ($FAILS item(s) missing). Gate may not be approved."
+  exit 1
+fi
+echo "gate-check $GATE: evidence PRESENT. Now obtain human approval and append to $H/DECISIONS.log."

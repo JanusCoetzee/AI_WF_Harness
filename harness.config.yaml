@@ -1,0 +1,65 @@
+# AI Workflow Harness — project configuration
+# Copy into your repo root and edit the `verify` block to match your toolchain.
+
+project:
+  name: CHANGE_ME
+  default_risk_tier: T2        # T1 | T2 | T3 — see risk_tiers below
+  artifacts_dir: docs/harness  # PRD, ADRs, plans, state, gate evidence live here
+
+# ---------------------------------------------------------------------------
+# Risk tiers scale the ceremony. Assign per work item at G0; default above.
+# ---------------------------------------------------------------------------
+risk_tiers:
+  T1:
+    description: >
+      Money movement, customer-facing, regulatory reporting, or handles data
+      classified Confidential or above. Full ceremony.
+    gates: [G0, G1, G2, G3, G4, G5, G6, G7]
+    requires:
+      threat_model: true
+      adr_for_all_significant_decisions: true
+      human_reviewers: 2          # four-eyes minimum
+      eval_spec_for_ai_features: true
+      progressive_rollout: true
+      change_record: true         # formal change-management ticket before deploy
+  T2:
+    description: Internal tooling, batch jobs, non-customer-facing services.
+    gates: [G0, G1, G3, G4, G5, G6, G7]   # G2 folds into G1 unless novel architecture
+    requires:
+      threat_model: lightweight   # STRIDE-per-boundary table only
+      human_reviewers: 1
+      eval_spec_for_ai_features: true
+      progressive_rollout: false
+      change_record: true
+  T3:
+    description: Sandboxes, spikes, throwaway prototypes. Never touches real data.
+    gates: [G0, G3, G4]
+    requires:
+      human_reviewers: 0          # but T3 output cannot be promoted without re-tiering
+      note: Promoting T3 code to T1/T2 restarts the workflow at G1.
+
+# ---------------------------------------------------------------------------
+# The verify loop. scripts/verify.sh runs these in order, fails fast.
+# Empty string = skip step. Keep each step under ~2 minutes or split the suite.
+# ---------------------------------------------------------------------------
+verify:
+  typecheck: "npx tsc --noEmit"          # e.g. "mypy ." for Python
+  lint:      "npx eslint . --max-warnings 0"
+  test:      "npx vitest run"
+  eval:      ""                          # e.g. "npx evalite run" or "promptfoo eval" — REQUIRED if AI features exist
+  build:     "npm run build --if-present"
+
+# ---------------------------------------------------------------------------
+# Data classification ceiling for prompt content. See docs/OPERATING-MODEL.md.
+# ---------------------------------------------------------------------------
+data:
+  max_prompt_classification: Internal    # Public < Internal < Confidential < Restricted
+  synthetic_data_only_in_tests: true
+
+# ---------------------------------------------------------------------------
+# Release policy consumed by /harness-release and scripts/evidence-bundle.sh
+# ---------------------------------------------------------------------------
+release:
+  evidence_bundle_dir: docs/harness/evidence
+  required_artifacts: [PRD, PLAN, verify-log, review-record, secure-gate-record]
+  rollback_plan_required: true

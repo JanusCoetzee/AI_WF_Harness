@@ -1,0 +1,5 @@
+# Machine-specific Claude Code permissions — not part of the harness
+.claude/settings.local.json
+
+# OS noise
+.DS_Store

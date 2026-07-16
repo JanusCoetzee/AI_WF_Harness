@@ -43,7 +43,8 @@ AI_WF_Harness/
 ├── gates/GATES.md         ← entry/exit criteria + evidence per gate
 ├── templates/             ← PRD, ADR, PLAN, THREAT-MODEL, EVAL-SPEC, …
 ├── .claude/
-│   ├── settings.json      ← hooks: dangerous-command guard
+│   ├── settings.json      ← hooks: command guards, commit traceability,
+│   │                        verify-before-stop, session state injection
 │   └── skills/            ← /harness-* slash commands for each stage
 └── scripts/
     ├── verify.sh          ← the verify loop (typecheck→lint→test→eval→build)

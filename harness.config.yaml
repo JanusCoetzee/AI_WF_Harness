@@ -2,7 +2,8 @@
 # Copy into your repo root and edit the `verify` block to match your toolchain.
 
 project:
-  name: CHANGE_ME
+  name: AI_WF_Harness          # adopting a repo? set your project name here —
+                               # stop-verify-check enforces only once configured
   default_risk_tier: T2        # T1 | T2 | T3 — see risk_tiers below
   artifacts_dir: docs/harness  # PRD, ADRs, plans, state, gate evidence live here
 
@@ -57,11 +58,15 @@ change_path:
 # Empty string = skip step. Keep each step under ~2 minutes or split the suite.
 # ---------------------------------------------------------------------------
 verify:
-  typecheck: "npx tsc --noEmit"          # e.g. "mypy ." for Python
-  lint:      "npx eslint . --max-warnings 0"
-  test:      "npx vitest run"
-  eval:      ""                          # e.g. "npx evalite run" or "promptfoo eval" — REQUIRED if AI features exist
-  build:     "npm run build --if-present"
+  # This repo (the harness itself: Flask app + bash tooling). Adopting repos
+  # replace these with their toolchain, e.g. Java: "mvn -q verify" · Python:
+  # "mypy ." / "ruff check ." / "pytest" · Node: "npx tsc --noEmit" /
+  # "npx eslint . --max-warnings 0" / "npx vitest run".
+  typecheck: "python3 -m py_compile app/server.py"
+  lint:      "bash -n scripts/verify.sh scripts/gate-check.sh scripts/evidence-bundle.sh scripts/hooks/*.sh"
+  test:      ""
+  eval:      ""                          # REQUIRED if AI features exist (evalite / promptfoo / pytest-evals)
+  build:     ""
 
 # ---------------------------------------------------------------------------
 # Engineering standards thresholds — single source of the numbers.

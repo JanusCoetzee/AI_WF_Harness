@@ -1,6 +1,10 @@
 # Machine-specific Claude Code permissions — not part of the harness
 .claude/settings.local.json
 
+# Hook working state (session-local)
+.claude/.needs-verify
+.claude/UNVERIFIED.log
+
 # OS noise
 .DS_Store
 

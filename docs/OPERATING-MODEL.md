@@ -55,6 +55,37 @@ One line per event, append-only, committed:
 2026-07-17 | override  | j.doe | started M2 before M1 demo recorded; reason: env outage
 ```
 
+## Enforcement architecture: hooks vs. skills vs. rules
+
+The dividing rule for where a MUST lives:
+
+> **Mechanically checkable → hook. Requires judgment → skill. Shapes default
+> behavior → CLAUDE.md rule.** A MUST that only lives in prose is a suggestion.
+
+| Layer | Nature | What lives there |
+| --- | --- | --- |
+| **Hooks** (`.claude/settings.json` → `scripts/hooks/`) | Deterministic; harness-executed; the model cannot skip them | Destructive-command blocking, commit traceability, verify-before-turn-end, session state injection |
+| **Skills** (`.claude/skills/`) | Model-invoked playbooks | Judgment work: PRD drafting, design alternatives, adversarial review, recon, threat-model deltas |
+| **CLAUDE.md rules** | Always-loaded instructions | Defaults and posture: schema-first, small steps, honesty about red runs |
+| **Humans** | Gates | Approval, waivers, risk acceptance — never delegated to hooks or models |
+
+### The hook set
+
+| Hook | Event | Enforces |
+| --- | --- | --- |
+| `bash-guard.sh` | PreToolUse (Bash) | No destructive/history-rewriting commands; release actions stay human |
+| `commit-guard.sh` | PreToolUse (Bash) | Every commit references a ticket / REQ-### / CHG-### — or an explicit `NO-TICKET: <reason>` line |
+| `post-edit-flag.sh` + `stop-verify-check.sh` | PostToolUse (Edit/Write) + Stop | The turn cannot end with code changed since the last green verify — run `scripts/verify.sh` or declare via `declare-unverified.sh` |
+| `session-start.sh` | SessionStart | STATE.md + recent decisions injected into context automatically |
+
+### Escape hatches are auditable, never silent
+
+Deterministic controls need pressure valves or they get disabled wholesale. Every
+valve here leaves a mark: `NO-TICKET:` is greppable in history;
+`declare-unverified.sh` writes to `DECISIONS.log` and G4 cannot pass while the
+declaration stands. An escape hatch that leaves no trace is a bypass; these are
+confessions.
+
 ## AI-specific model risk
 
 For any feature where an LLM makes or influences a decision:

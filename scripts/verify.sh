@@ -51,6 +51,8 @@ main() {
   for step in typecheck lint test eval build; do
     run_step "$step" "$(get_cmd "$CONFIG" "$step")"
   done
+  # Green run clears the needs-verify flag set by the post-edit hook.
+  rm -f "$(dirname "$CONFIG")/.claude/.needs-verify"
   echo "verify: ALL GREEN"
 }
 

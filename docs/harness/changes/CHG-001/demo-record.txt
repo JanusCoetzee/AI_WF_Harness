@@ -1,0 +1,5 @@
+$ curl -s http://127.0.0.1:5052/api/health
+{"documents":31,"skills":13,"status":"ok"}
+
+$ curl -s http://127.0.0.1:5052/ | grep -o '[0-9]* documents · [0-9]* skills'
+31 documents · 13 skills

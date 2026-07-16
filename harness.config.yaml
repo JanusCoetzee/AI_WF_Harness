@@ -64,7 +64,7 @@ verify:
   # "npx eslint . --max-warnings 0" / "npx vitest run".
   typecheck: "python3 -m py_compile app/server.py"
   lint:      "bash -n scripts/verify.sh scripts/gate-check.sh scripts/evidence-bundle.sh scripts/hooks/*.sh"
-  test:      ""
+  test:      ".venv/bin/python -m pytest -q tests/"
   eval:      ""                          # REQUIRED if AI features exist (evalite / promptfoo / pytest-evals)
   build:     ""
 

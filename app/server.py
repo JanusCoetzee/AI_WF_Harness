@@ -122,9 +122,11 @@ BROWNFIELD = [
 def index():
     sections = catalog()
     skills = next((s["items"] for s in sections if s["key"] == "skills"), [])
+    doc_count = sum(len(s["items"]) for s in sections if s["key"] != "skills")
     return render_template(
         "index.html", sections=sections, skills=skills,
         greenfield=GREENFIELD, brownfield=BROWNFIELD,
+        doc_count=doc_count, skill_count=len(skills),
         active=None,
     )
 
@@ -150,6 +152,17 @@ def page(section_key: str, slug: str):
 @app.route("/api/catalog")
 def api_catalog():
     return jsonify(catalog())
+
+
+@app.route("/api/health")
+def api_health():
+    # CHG-001.1: counts derive from the same live catalog scan the UI serves.
+    sections = catalog()
+    return jsonify({
+        "status": "ok",
+        "documents": sum(len(s["items"]) for s in sections if s["key"] != "skills"),
+        "skills": sum(len(s["items"]) for s in sections if s["key"] == "skills"),
+    })
 
 
 if __name__ == "__main__":

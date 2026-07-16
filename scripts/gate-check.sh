@@ -90,9 +90,17 @@ case "$GATE" in
     ;;
   G5)
     need_file "$H/review-record.md" "human review record (names, tier-correct count)"
+    need_grep '[Rr]eviewer' "$H/review-record.md" "named reviewer(s) required"
+    need_grep '[Vv]erdict|[Aa]pprove' "$H/review-record.md" "an explicit verdict required"
+    need_grep '[Tt]raceability' "$H/review-record.md" "traceability spot-check must be recorded"
     ;;
   G6)
     need_file "$H/secure-gate-record.md" "secret scan / dep audit / threat delta / data sweep results"
+    need_grep '[Ss]ecret scan' "$H/secure-gate-record.md" "secret-scan results required"
+    need_grep '[Aa]udit' "$H/secure-gate-record.md" "dependency-audit results required"
+    need_grep '[Tt]hreat' "$H/secure-gate-record.md" "threat-model delta required"
+    need_grep '[Dd]ata' "$H/secure-gate-record.md" "data-handling sweep required"
+    need_grep 'PASS|FAIL|[Vv]erdict' "$H/secure-gate-record.md" "explicit verdict required"
     ;;
   G7)
     ls -d "$H"/evidence/*/ >/dev/null 2>&1 \

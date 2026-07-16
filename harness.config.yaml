@@ -63,8 +63,8 @@ verify:
   # "mypy ." / "ruff check ." / "pytest" · Node: "npx tsc --noEmit" /
   # "npx eslint . --max-warnings 0" / "npx vitest run".
   typecheck: "python3 -m py_compile app/server.py"
-  lint:      "bash -n scripts/verify.sh scripts/gate-check.sh scripts/evidence-bundle.sh scripts/hooks/*.sh"
-  test:      ".venv/bin/python -m pytest -q tests/"
+  lint:      ".venv/bin/ruff check app tests && bash -n scripts/verify.sh scripts/gate-check.sh scripts/evidence-bundle.sh scripts/hooks/*.sh"
+  test:      ".venv/bin/python -m pytest -q tests/ --cov=app --cov-fail-under=80"
   eval:      ""                          # REQUIRED if AI features exist (evalite / promptfoo / pytest-evals)
   build:     ""
 

@@ -1,0 +1,11 @@
+# STD-003: cognitive/cyclomatic complexity ceiling (docs/STANDARDS.md)
+# ruff uses McCabe (C901) as the enforceable proxy; ceiling from
+# harness.config.yaml standards.cognitive_complexity_max.
+line-length = 100
+
+[lint]
+select = ["E", "F", "C901"]
+ignore = ["E501"]
+
+[lint.mccabe]
+max-complexity = 12

@@ -7,11 +7,11 @@ current — a stale STATE.md is worse than none.
 | --- | --- |
 | Work item | CHG-001 — /api/health endpoint + UI document counts (harness browser) |
 | Risk tier | T2 |
-| Current stage | 04-implementation (complete) |
-| Last gate passed | GC (2026-07-17, DECISIONS.log) |
-| Next gate | G4 — evidence: verify log ✓, demo record ✓ |
-| Active milestone | — (fast path: single slice, built) |
-| Current task | G4 passage |
+| Current stage | 08-operate (CHG-001 released as v0.2.0) |
+| Last gate passed | G7 (2026-07-17, DECISIONS.log) |
+| Next gate | — (next work item starts at B0 or 00) |
+| Active milestone | — |
+| Current task | retro actions 1-3 (RETRO-2026-07-17.md) |
 | Blockers | none |
 | UNVERIFIED items | none |
 
@@ -20,6 +20,6 @@ current — a stale STATE.md is worse than none.
 Three bullets max, overwritten each session-end: what just happened, what's next,
 any landmine the next session must know about.
 
-- E2E drill of the brownfield fast path started (gate approvals SIMULATED, marked).
-- Next: CHANGE.md intake for CHG-001.
-- Flask server on :5050 is running pre-change code; restart is the deploy step.
+- E2E drill complete: CHG-001 through GC→G4→G5→G6→G7; all approvals SIMULATED-marked.
+- Next: retro actions (strengthen G5/G6 checks, gitleaks, standards tooling).
+- Server on :5050 now runs v0.2.0; /api/health is live.

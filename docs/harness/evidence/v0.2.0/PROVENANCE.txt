@@ -1,0 +1,5 @@
+version:   v0.2.0
+generated: 2026-07-16T23:12:09Z
+git_sha:   c92437c921aa2382b7ee7cbe9890421358c15257
+git_state: 5 uncommitted paths
+generator: janus@Abacus.local

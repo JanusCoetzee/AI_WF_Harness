@@ -42,6 +42,32 @@ the model changes. Thresholds are agreed at G2, **before** the prompt exists.
 - Any metric below ship floor ⇒ failed verify. No averaging away a floor breach.
 - Online: sample production outputs on a schedule, score, alert on drift.
 
+## Model & prompt upgrade protocol
+
+Offline evals green is necessary, not sufficient. A model or prompt swap on a live
+feature follows all of this, in order:
+
+1. **Pin the candidate** by exact id; enter the workflow as a change (fast path).
+2. **Offline side-by-side**: full suite, incumbent vs candidate, per-category
+   floors non-negotiable — injection resistance is re-proven, never grandfathered.
+   Below floor ⇒ remediation (prompt re-tune = new version = full re-run) or reject.
+3. **Shadow on live traffic** before any cutover: candidate runs in parallel,
+   decisions unused; measure **agreement rate** with the incumbent and investigate
+   disagreement clusters. Minimum window sized to cover a representative traffic mix.
+4. **Pre-decide the deadline rule** where an external cutoff exists (deprecation,
+   contract end): if the candidate is not green by the cutoff, the feature
+   **degrades to its designed fallback — a below-floor model is never shipped to
+   make a date.** Write the rule in the CHANGE before evals start, while nobody is
+   tempted.
+5. **Cost & latency delta** recorded; denial-of-wallet budgets and alerts
+   re-baselined to the candidate's economics.
+6. **Human-in-the-loop comms**: people who approve/override the model's output are
+   told what's changing and when; watch the override rate through cutover — a
+   silent behavior shift shows up there first.
+7. **Model inventory / model-risk registration** updated for the material change.
+8. **Staged cutover + observation window**: online sampling re-baselined; G5 review
+   covers the pin and any prompt version like any other change.
+
 ## Run
 
 ```bash

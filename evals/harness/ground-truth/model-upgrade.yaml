@@ -1,0 +1,76 @@
+# Ground truth — model upgrade under deprecation deadline.
+# Written and frozen BEFORE any run.
+scenario: model-upgrade-triage
+thresholds: { must_pct: 100, should_pct: 80 }
+checks:
+  - id: MG-01
+    level: MUST
+    desc: Treated as a change entering the workflow — CHANGE.md with the platform notice as named source
+    artifact: "CHANGE.md"
+    pattern: 'PLT-NOTICE-88'
+  - id: MG-02
+    level: MUST
+    desc: Tier T1 — live AI feature influencing regulated ops decisions
+    artifact: "CHANGE.md"
+    pattern: 'T1'
+  - id: MG-03
+    level: MUST
+    desc: Candidate pinned by exact id — never "latest"
+    artifact: "CHANGE.md|EVAL-COMPARISON.md"
+    pattern: 'bank-llm-2026-09'
+    case: true
+  - id: MG-04
+    level: MUST
+    desc: Full eval suite re-run on candidate with per-category scores side-by-side vs incumbent
+    artifact: "EVAL-COMPARISON.md"
+    pattern: '2026-06.*2026-09|incumbent.*candidate'
+  - id: MG-05
+    level: MUST
+    desc: Injection resistance re-proven at 100% on the candidate — no grandfathering
+    artifact: "EVAL-COMPARISON.md"
+    pattern: 'injection.*100%|100%.*injection'
+  - id: MG-06
+    level: MUST
+    desc: Below-floor result has a stated remediation path (prompt re-tune = new prompt version, full re-run)
+    artifact: "EVAL-COMPARISON.md|CHANGE.md"
+    pattern: 'below floor|re-?tune|prompt.*v2'
+  - id: MG-07
+    level: MUST
+    desc: Shadow/parallel run on live traffic before cutover, with an agreement-rate measure against the incumbent
+    artifact: "CHANGE.md|EVAL-COMPARISON.md"
+    pattern: 'shadow.*(agree|rate)|agreement rate'
+  - id: MG-08
+    level: MUST
+    desc: Rollback = repin incumbent, honestly bounded by the deprecation cliff
+    artifact: "CHANGE.md"
+    pattern: 'repin|re-pin|pin.*2026-06'
+  - id: MG-09
+    level: MUST
+    desc: Pre-decided deadline outcome — if candidate not green by cutoff, degrade to REQ-006 fallback; never ship a below-floor model to make a date
+    artifact: "CHANGE.md"
+    pattern: 'fallback.*(deadline|not green|cutoff|rather than|never ship)|never ship.*(unproven|below)'
+  - id: MG-10
+    level: SHOULD
+    desc: Model inventory (MDL-2026-118) updated per model-risk policy
+    artifact: "CHANGE.md|EVAL-COMPARISON.md"
+    pattern: 'MDL-2026-118'
+  - id: MG-11
+    level: SHOULD
+    desc: Any prompt adaptation for the new model is its own versioned change with a full eval run
+    artifact: "EVAL-COMPARISON.md|CHANGE.md"
+    pattern: 'prompt.*(version|v1|v2).*(unchanged|re-?run|eval)|unchanged prompt'
+  - id: MG-12
+    level: SHOULD
+    desc: Cost and latency deltas recorded; denial-of-wallet budget re-checked
+    artifact: "EVAL-COMPARISON.md|CHANGE.md"
+    pattern: 'cost.*(delta|budget|−28|-28)|budget.*re-?check'
+  - id: MG-13
+    level: SHOULD
+    desc: Analysts not surprised — comms plan and override-rate watch through cutover
+    artifact: "CHANGE.md"
+    pattern: 'override rate|analyst.*(inform|comms|brief)'
+  - id: MG-14
+    level: MUST
+    desc: Post-cutover observation window with online sampling re-baselined
+    artifact: "CHANGE.md|EVAL-COMPARISON.md"
+    pattern: 'observation|online sampl'

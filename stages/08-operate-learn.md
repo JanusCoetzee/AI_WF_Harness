@@ -12,8 +12,12 @@
   - Track output-schema failure rate, refusal rate, latency, and cost per call.
   - Sample outputs on a schedule and score them against the eval suite — drift is
     silent and *will* happen (model updates, input distribution shifts).
-  - A proposed model or prompt change re-enters the workflow at Stage 04 with an
-    eval run; it is a change like any other.
+  - A proposed model or prompt change re-enters the workflow at Stage 04 and
+    follows the **Model & prompt upgrade protocol** in `templates/EVAL-SPEC.md`:
+    offline side-by-side at the floors, shadow with agreement rate, pre-decided
+    deadline rule (degrade to fallback, never ship below floor to make a date),
+    cost re-baseline, HIL comms + override-rate watch, inventory update, staged
+    cutover. It is a change like any other — plus that protocol.
 
 ## Incidents
 

@@ -1,0 +1,70 @@
+# Ground truth — third-party vendor integration. Frozen before any run.
+# Tracked as GitHub issue #3.
+scenario: vendor-screening
+thresholds: { must_pct: 100, should_pct: 80 }
+checks:
+  - id: VN-01
+    level: MUST
+    desc: Tier T1 — sanctions control on money movement with PII leaving the estate
+    artifact: "IDEA.md|PRD.md"
+    pattern: 'T1'
+  - id: VN-02
+    level: MUST
+    desc: Data leaving the bank surfaced explicitly — which fields, classification, under what agreement (DPA + residency)
+    artifact: "PRD.md"
+    pattern: 'DPA|data[- ]processing agreement|leaves the (bank|estate)|shared externally'
+  - id: VN-03
+    level: MUST
+    desc: Third-party risk assessment referenced and sequenced before build spend (TPRM / VRA)
+    artifact: "PRD.md|THREAT-MODEL.md"
+    pattern: 'TPRM|VRA|vendor risk assessment'
+  - id: VN-04
+    level: MUST
+    desc: Vendor outage handled by an explicit requirement — behavior when VerifyChain is down or slow
+    artifact: "PRD.md"
+    pattern: '(outage|unavailable|timeout|degrad).{0,200}(REQ|queue|hold)|REQ-[0-9]+.{0,200}(outage|unavailable|timeout)'
+  - id: VN-05
+    level: MUST
+    desc: Fail-closed decided explicitly — a payment never proceeds unscreened; control-failure semantics are a named decision
+    artifact: "PRD.md|THREAT-MODEL.md"
+    pattern: 'fail[- ]closed|never proceeds unscreened|never (skip|bypass).{0,40}screen'
+  - id: VN-06
+    level: MUST
+    desc: Exit strategy — data return/deletion and replacement path documented before dependence
+    artifact: "PRD.md|adr/*.md"
+    pattern: 'exit (plan|strategy)|data (return|deletion).{0,80}exit|off-?boarding'
+  - id: VN-07
+    level: MUST
+    desc: Vendor API is a modeled trust boundary
+    artifact: "THREAT-MODEL.md"
+    pattern: 'VerifyChain.{0,60}(boundary|trust)|trust boundary.{0,60}VerifyChain|vendor.{0,40}boundary'
+  - id: VN-08
+    level: MUST
+    desc: SLA/latency captured as numeric NFRs
+    artifact: "PRD.md"
+    pattern: '300ms|99\.9'
+  - id: VN-09
+    level: SHOULD
+    desc: Environment separation — sandbox uses synthetic data only; production keys gated on contract
+    artifact: "PRD.md|THREAT-MODEL.md"
+    pattern: 'sandbox.{0,120}(synthetic|no (customer|production|real))|synthetic.{0,80}sandbox'
+  - id: VN-10
+    level: SHOULD
+    desc: Contract-before-dependence — build sequenced so production coupling waits for signature
+    artifact: "PRD.md|adr/*.md"
+    pattern: 'contract.{0,120}(sign|before|gate)|procurement.{0,120}(before|gate)'
+  - id: VN-11
+    level: MUST
+    desc: ADR with genuine options (vendor vs enhance batch vs second vendor)
+    artifact: "adr/*.md"
+    pattern: 'Option B'
+  - id: VN-12
+    level: MUST
+    desc: Screening decisions carry an audit trail requirement
+    artifact: "PRD.md"
+    pattern: 'audit trail|attributable.{0,60}timestamp'
+  - id: VN-13
+    level: SHOULD
+    desc: Incumbent nightly batch retained as belt-and-braces during transition
+    artifact: "PRD.md|adr/*.md"
+    pattern: 'nightly batch.{0,120}(retain|remain|parallel|until)|belt'

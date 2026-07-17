@@ -33,6 +33,8 @@ delivery artifacts for Financial Services work.
 | Brownfield: interest-rounding drift in a legacy statement generator | `scenarios/brownfield-rounding-drift.md` | Fast path: ticket repair, recon, Hyrum contracts, escalation triggers, remediation of past impact |
 | Model upgrade under deprecation deadline | `scenarios/model-upgrade-triage.md` | Operate-phase re-entry: offline floors, shadow cutover, pre-decided deadline rule |
 | Break-glass: actively exploited RCE | `scenarios/breakglass-cve.md` | Gate GE: time-ordered evidence, interim mitigation, compromise assessment |
+| Regulatory-report restatement (issue #2) | `scenarios/regreport-restatement.md` | Effective-dating by period, parallel run, restatement disposition, control totals |
+| Vendor integration (issue #3) | `scenarios/vendor-screening.md` | Third-party risk: data leaving the estate, TPRM, fail-closed as a named decision, exit plan |
 
 ## Run
 

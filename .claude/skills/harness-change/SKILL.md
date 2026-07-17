@@ -29,6 +29,9 @@ Playbook: `stages/B0-change-intake.md`. Template: `templates/CHANGE.md`. Exit: G
    constraints** (freeze windows, batch/statement cycles), and **remediation of
    past impact** — if the defect produced wrong figures or documents historically,
    the disposition of the past is part of the change, not someone else's problem.
+   If the touched output feeds a regulator, tax, or financial report, the
+   **Regulated outputs** table is mandatory: parallel run before first live
+   submission, control totals, lineage, and the accountable signatory's sign-off.
 7. Recon is next (`/harness-recon`) unless the change is docs/typo-level trivia —
    then mark `waived-trivial` with a written reason.
 8. Update `STATE.md` (stage B0, active change). State what GC needs:

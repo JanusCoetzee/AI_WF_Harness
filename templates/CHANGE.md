@@ -41,6 +41,15 @@ Testable as written. Commits, tests, and the PR reference `CHG-###`.
 How this change is undone if it's wrong. "Revert the commit" is acceptable only if
 there is no migration, no config change, and no consumer that adapts.
 
+## Regulated / reported outputs (delete section only if nothing here feeds a regulator, tax, or financial report)
+
+| Question | Answer |
+| --- | --- |
+| **Parallel run**: at least one cycle produced under old AND new logic, deltas explained, before the first live submission? | |
+| **Control total**: what mechanically proves no records were lost/double-counted between source and report? | |
+| **Lineage**: is each reported figure traceable to the rule/code version and source data that produced it? | |
+| **Accountable owner sign-off**: the report's business signatory approves the change — engineering peers are not enough for a regulated output | |
+
 ## Remediation of past impact
 
 A fix changes the future; a bank also answers for the past. If the defect produced

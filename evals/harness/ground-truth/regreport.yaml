@@ -1,0 +1,70 @@
+# Ground truth — regulatory report change with restatement. Frozen before any run.
+# Tracked as GitHub issue #2.
+scenario: regreport-restatement
+thresholds: { must_pct: 100, should_pct: 80 }
+checks:
+  - id: RR-01
+    level: MUST
+    desc: Tier T1 — regulatory reporting surface
+    artifact: "CHANGE.md"
+    pattern: 'T1'
+  - id: RR-02
+    level: MUST
+    desc: Ticket key REG-9034 is the change ID; named source t.okafor
+    artifact: "CHANGE.md"
+    pattern: 'REG-9034'
+  - id: RR-03
+    level: MUST
+    desc: Effective-dating by reporting period, not deploy date — rule versions selected per period
+    artifact: "CHANGE.md|RECON.md"
+    pattern: 'reporting period|effective.{0,40}period|per[- ]period'
+  - id: RR-04
+    level: MUST
+    desc: Parallel run — at least one cycle produced under old and new rules with deltas explained BEFORE first live submission
+    artifact: "CHANGE.md"
+    pattern: 'parallel|dual[- ]run'
+  - id: RR-05
+    level: MUST
+    desc: Discovered historical misreporting dispositioned — restatement/resubmission decision with named owner, not silently fixed forward
+    artifact: "CHANGE.md"
+    pattern: 'resubmi|restat'
+  - id: RR-06
+    level: MUST
+    desc: Regulator communication owned by the accountable signatory, not engineering
+    artifact: "CHANGE.md"
+    pattern: 't\.okafor.{0,80}(regulator|resubmi|owns)|signatory'
+  - id: RR-07
+    level: MUST
+    desc: Control total — report ties back to source balances mechanically, proving no records lost in reclassification
+    artifact: "CHANGE.md|RECON.md"
+    pattern: 'control total'
+  - id: RR-08
+    level: SHOULD
+    desc: Lineage — each reported figure traceable to rule version + source data
+    artifact: "CHANGE.md|RECON.md"
+    pattern: 'lineage|rule version.{0,60}(archiv|record|trace)'
+  - id: RR-09
+    level: MUST
+    desc: Historical impact quantified (backtest of prior periods under corrected rules)
+    artifact: "CHANGE.md|RECON.md"
+    pattern: 'quantif|5 quarters|prior period'
+  - id: RR-10
+    level: MUST
+    desc: Characterization tests pin current classification outputs before change
+    artifact: "RECON.md"
+    pattern: 'characteri[sz]ation'
+  - id: RR-11
+    level: SHOULD
+    desc: Timing respects the submission calendar (BD15, period boundaries)
+    artifact: "CHANGE.md"
+    pattern: 'BD15|business day 15|submission calendar'
+  - id: RR-12
+    level: SHOULD
+    desc: Accountable report owner sign-off on the change to a regulated output — beyond the engineering peer
+    artifact: "CHANGE.md"
+    pattern: 'sign-?off.{0,80}(t\.okafor|report owner|signatory)|(t\.okafor|report owner|signatory).{0,80}sign'
+  - id: RR-13
+    level: MUST
+    desc: Escalation triggers honestly assessed (operational-accounts discovery re-checked at recon)
+    artifact: "CHANGE.md"
+    pattern: '[Ee]scalation trigger'

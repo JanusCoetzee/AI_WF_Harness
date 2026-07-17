@@ -32,6 +32,15 @@ every boundary drawn here appears in the table below.
 | Model/prompt drift degrading a control | | Pinned versions, eval regression gate, online monitoring | |
 | Denial of wallet (cost amplification) | | Budget alarms, per-caller quotas | |
 
+## Control failure semantics
+
+For every *control* in the modeled flow (screening, authorization, validation,
+limits): what happens when the control itself fails? **Fail-open or fail-closed is
+a named decision with an owner** — never an emergent property of timeout handling.
+
+| Control | On failure: open / closed | Consequence accepted | Decided by |
+| --- | --- | --- | --- |
+
 ## Assumptions & accepted risks
 
 | # | Assumption / accepted risk | Owner | Expiry / revisit date |

@@ -62,6 +62,23 @@ For anything that moves, transforms, or counts records of value: how do we prove
 nothing was lost or double-processed between systems? Name the control (counts,
 hash totals, break reports) and the REQ that owns it.
 
+## Third parties (delete section only if no external provider is in any flow)
+
+One table per vendor/provider. In a bank, a vendor on a critical path is a risk
+decision, not an implementation detail.
+
+| Question | Answer |
+| --- | --- |
+| Provider & service | |
+| **Data shared externally** — exact fields + classification; what leaves the bank under which agreement (DPA, residency guarantees) | |
+| **TPRM / vendor risk assessment** — VRA reference and status; due diligence **gates build spend**, not just go-live | |
+| **Contract status** — production coupling waits for signature; what may proceed on sandbox meanwhile | |
+| SLA + our behavior when they miss it | |
+| **Failure semantics** — if this provider backs a *control*: fail-open or fail-closed, decided and named here | |
+| **Exit plan** — data return/deletion, replacement path, switching cost | |
+| Environments — sandbox is synthetic-data-only; key separation | |
+| Transition — is the incumbent retained (belt-and-braces) until confidence, and what retires it? | |
+
 ## Data inventory
 
 Every data element touched. Anything above `Internal` cannot enter prompts without a logged exception.

@@ -20,6 +20,11 @@
   excessive agency (what can the model *cause* if it goes wrong?).
 - Draft `EVAL-SPEC.md` for each AI behavior: dataset, scorers, thresholds. Thresholds
   are agreed here, **before** anyone falls in love with a prompt.
+- **Third parties are risk decisions, not implementation details.** Any external
+  provider in a flow gets the PRD's Third-parties table (data shared + agreements,
+  TPRM before build spend, contract gating production coupling, failure semantics,
+  exit plan) and appears as a trust boundary here — with its control-failure
+  semantics (fail-open/fail-closed) decided and named, never left emergent.
 
 ## Human role
 

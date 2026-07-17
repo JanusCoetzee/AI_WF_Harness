@@ -3,9 +3,9 @@
 | Field | Value |
 | --- | --- |
 | Date | 2026-07-17 (updated same day with scenario 3) |
-| Scenarios | greenfield payment-exception triage · brownfield interest-rounding drift · model upgrade under deprecation deadline · **break-glass: actively exploited RCE** |
+| Scenarios | greenfield payment-exception triage · brownfield interest-rounding drift · model upgrade · break-glass RCE · **regulatory-report restatement (issue #2)** · **vendor integration (issue #3)** |
 | Bar | MUST 100%, SHOULD ≥ 80% |
-| Result | **All four scenarios SATISFACTORY** (MUST 100%, SHOULD 100%); earlier scenarios regression-checked after each round of fixes |
+| Result | **All six scenarios SATISFACTORY** (MUST 100%, SHOULD 100%); full regression across all six after the final fixes |
 
 ## Scores
 
@@ -71,6 +71,39 @@ tax-feed trap consumer, characterization-test pinning of wrong behavior.
 | BF-13 (SHOULD) | No timing-constraint prompt (freeze windows, statement cycles) | CHANGE template: "Timing constraints" field |
 | BF-16 (SHOULD) | No linked-records prompt (audit findings, incidents) | CHANGE + ISSUE templates: "Linked records" field; change skill step 6 |
 
+### Scenario 5 — regulatory-report restatement (issue #2)
+
+| Run | MUST | SHOULD | Verdict |
+| --- | --- | --- | --- |
+| run-1 | 8/10 (80%) | 2/3 (67%) | NOT SATISFACTORY |
+| run-2 | 10/10 (100%) | 3/3 (100%) | SATISFACTORY |
+
+Payoff run: the scenario-2 fixes **generalized** — remediation-of-past-impact
+elicited the resubmission disposition with the accountable signatory owning
+regulator comms; timing-constraints elicited the BD15/period-boundary handling.
+New gaps: no **parallel-run** prompt (RR-04), no **control-total** prompt on the
+fast path (RR-07), no lineage (RR-08). Fix: **Regulated / reported outputs** table
+in the CHANGE template (parallel run, control total, lineage, accountable-owner
+sign-off). Scorer note: RR-12 pass in run-1 was weak — "sign" matched inside
+"signatory"; owner sign-off was added to the template regardless.
+
+### Scenario 6 — vendor integration (issue #3)
+
+| Run | MUST | SHOULD | Verdict |
+| --- | --- | --- | --- |
+| run-1 | 6/10 (60%) | 0/3 (0%) | NOT SATISFACTORY |
+| run-2 | 10/10 (100%) | 3/3 (100%) | SATISFACTORY |
+
+The weakest run-1 in the suite, as predicted — third-party risk had no home in the
+harness at all. Run-1's most instructive miss: the hold-queue design *was*
+fail-closed in behavior, but the decision was never **named** (VN-05) — behavior
+without a named decision is what fails audits. Fixes: **Third parties** table in
+the PRD template (data leaving the estate + DPA/residency, TPRM gating build
+spend, contract gating production coupling, failure semantics, exit plan, synthetic
+sandbox, incumbent transition) and a **Control failure semantics** table in the
+threat-model template (fail-open/fail-closed as a named, owned decision), wired
+from stage 02.
+
 ## Honest limitations
 
 1. **Same-author eval.** Ground truth, run artifacts, and scorer share an author.
@@ -88,5 +121,7 @@ tax-feed trap consumer, characterization-test pinning of wrong behavior.
 ## Repeat policy
 
 Re-run whenever templates/skills change materially; add one new scenario per
-quarter. Model-upgrade and break-glass scenarios done 2026-07-17; next candidates:
-regulatory-report change with restatement, third-party vendor integration.
+quarter. All six queued scenarios complete as of 2026-07-17. From here, work on
+this suite is tracked in GitHub Issues (see #1 for the retroactive audit record of
+the pre-issue era); the strongest next upgrade remains a ground truth authored by
+someone other than the run author.

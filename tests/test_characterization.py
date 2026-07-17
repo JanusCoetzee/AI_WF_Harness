@@ -34,7 +34,8 @@ def test_catalog_sections_and_shape(client):
     assert r.status_code == 200
     data = r.get_json()
     keys = [s["key"] for s in data]
-    assert keys == ["overview", "docs", "stages", "gates", "templates", "skills", "config"]
+    # GH-6 deliberately moved this pin: "evals" section added.
+    assert keys == ["overview", "docs", "stages", "gates", "templates", "skills", "evals", "config"]
     first = data[0]["items"][0]
     assert set(first) == {"slug", "title", "path", "desc"}
 

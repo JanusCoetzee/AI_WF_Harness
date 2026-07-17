@@ -79,6 +79,28 @@ def catalog() -> list[dict]:
         })
     add("skills", "Skills (slash commands)", skills)
 
+    ev = ROOT / "evals" / "harness"
+    if ev.is_dir():
+        eval_items = []
+        for name in ("README.md", "REPORT.md"):
+            p = ev / name
+            if p.exists():
+                eval_items.append(_md_item(p, slug=p.stem.lower()))
+        if (ev / "manifest.yaml").exists():
+            eval_items.append({
+                "slug": "manifest", "title": "manifest.yaml",
+                "path": str((ev / "manifest.yaml").relative_to(ROOT)),
+                "desc": "Pins each scenario's frozen ground truth to its accepted run",
+            })
+        eval_items += [_md_item(p) for p in sorted((ev / "scenarios").glob("*.md"))]
+        for p in sorted((ev / "ground-truth").glob("*.yaml")):
+            eval_items.append({
+                "slug": f"gt-{p.stem}", "title": f"ground truth: {p.stem}",
+                "path": str(p.relative_to(ROOT)),
+                "desc": "Frozen before any run",
+            })
+        add("evals", "Evals (self-tests)", eval_items)
+
     cfg = ROOT / "harness.config.yaml"
     if cfg.exists():
         add("config", "Config", [{

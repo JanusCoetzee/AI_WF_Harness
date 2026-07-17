@@ -3,3 +3,5 @@
 2026-07-17 | G5 passed | janus (SIMULATED - e2e drill) | CHG-001 review: 1 low fixed, 2 info accepted, traceability 3/3
 2026-07-17 | G6 passed | janus (SIMULATED - e2e drill) | CHG-001 secret scan clean (degraded tool noted), pip-audit clean, threat delta reviewed
 2026-07-17 | G7 passed | janus (SIMULATED - e2e drill) | v0.2.0 deployed to :5050, rollback rehearsed on f0e7bd2, observation 10/10 healthy, bundle evidence/v0.2.0
+2026-07-17 | GC passed | janus (in-session request #6) | GH-6 evals browsable, T2
+2026-07-17 | G4 passed | janus (in-session) | GH-6 verify green 18 tests, red-first evidence in commit

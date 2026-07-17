@@ -117,3 +117,5 @@ typecheck → lint → unit tests → evals (if AI feature) → build
 `/harness-release` `/harness-retro`
 Brownfield fast path: `/harness-change` `/harness-recon` (with `/harness-issues`
 Mode B for repairing vague inbound tickets)
+Lanes: `/harness-maintain` (routine dependency/config hygiene, one batch dossier)
+`/harness-breakglass` (emergencies only — human-declared, act-first, retro'd)

@@ -22,6 +22,10 @@
 ## Incidents
 
 - Stabilize first, diagnose second, document third — but all three, always.
+- A hotfix that cannot wait for the fast path ships via **break-glass** (gate GE,
+  `/harness-breakglass`): Part A record as you act, peer eyes, human deploy,
+  retrospective dossier within 2 business days. The handoff from "stabilizing" to
+  "shipping the fix" is that protocol, not improvisation.
 - Blameless post-incident review within a week; actions get owners and dates and are
   tracked to closure (in a bank, an untracked incident action is an audit finding).
 - The LLM drafts the timeline from logs/chat and proposes contributing factors; the

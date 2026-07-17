@@ -45,7 +45,11 @@ case "$GATE" in
     need_grep "$CHG\.[0-9]" "$C/CHANGE.md" "numbered acceptance criteria required"
     need_grep '[Bb]last radius' "$C/CHANGE.md" "blast-radius estimate required"
     need_grep '[Rr]ollback' "$C/CHANGE.md" "rollback note required"
-    if grep -qi 'waived-trivial' "$C/CHANGE.md"; then
+    if [[ "$CHG" == MAINT-* ]]; then
+      echo "  ~ maintenance lane: per-package recon waived by lane rules"
+      need_grep '[Cc]hangelog' "$C/CHANGE.md" "changelog review is the lane's recon"
+      need_grep '[Ee]ject' "$C/CHANGE.md" "ejection rules/outcomes must be recorded"
+    elif grep -qi 'waived-trivial' "$C/CHANGE.md"; then
       echo "  ~ recon waived as trivial (waiver must state a reason in CHANGE.md)"
     else
       need_file "$C/RECON.md" "code map, consumers, implicit contracts, characterization tests"

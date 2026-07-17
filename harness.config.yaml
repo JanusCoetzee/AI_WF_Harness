@@ -69,6 +69,22 @@ verify:
   build:     ""
 
 # ---------------------------------------------------------------------------
+# Maintenance lane & break-glass — the two defined pressure valves.
+# ---------------------------------------------------------------------------
+maintenance_lane:
+  batch_id_format: MAINT-YYYY-MM
+  cadence: monthly + ad-hoc when a High/Critical lands
+  rides_the_batch: patch/minor bumps, clean changelog review, green verify
+  always_ejected: [major versions, verify failures, auth/crypto/session/payment libraries, behavior changes in used paths]
+
+break_glass:
+  triggers_only: [exploit in the wild, active customer harm, hard external deadline]
+  invoked_by: named human with authority (never the AI)
+  at_the_time: [Part A record, peer eyes on diff, verify (degradation disclosed), DECISIONS.log at deploy]
+  retrospective_deadline_business_days: 2
+  every_use_triggers_retro: true
+
+# ---------------------------------------------------------------------------
 # Engineering standards thresholds — single source of the numbers.
 # Human-readable register with enforcement mapping: docs/STANDARDS.md.
 # Tool configs (JaCoCo/PIT, coverage.py/mutmut, vitest/Stryker, ruff/eslint,

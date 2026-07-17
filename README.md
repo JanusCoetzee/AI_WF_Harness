@@ -25,6 +25,9 @@ Two schools of thought, combined:
  Brownfield fast path (most day-to-day work on existing code):
  CHANGE INTAKE ──▶ RECON ──GC──▶ BUILD ──G4──▶ (same pipeline as above)
         └─ escalation triggers exit to the full path at G1/G2 ─┘
+
+ Lanes: MAINTENANCE (batch hygiene, one GC) · BREAK-GLASS (emergencies, gate GE:
+ act-first with a 2-business-day retrospective dossier)
 ```
 
 Each stage has: purpose, inputs, **LLM role**, **human role**, outputs, and an exit **gate** with evidence requirements. Gates are defined in [`gates/GATES.md`](gates/GATES.md). How much gate ceremony applies depends on the work item's **risk tier** (see `harness.config.yaml`).

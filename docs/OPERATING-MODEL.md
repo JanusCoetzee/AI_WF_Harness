@@ -86,6 +86,17 @@ valve here leaves a mark: `NO-TICKET:` is greppable in history;
 declaration stands. An escape hatch that leaves no trace is a bypass; these are
 confessions.
 
+Two valves are big enough to be lanes of their own:
+
+- **Maintenance lane** (`/harness-maintain`, `MAINT-YYYY-MM` batch, gate GC) —
+  keeps routine hygiene cheap so it actually happens; ejection rules keep risky
+  bumps out of the batch.
+- **Break-glass** (`/harness-breakglass`, gate GE) — the emergency inversion:
+  human-declared trigger, Part A record at the moment of action, retrospective
+  dossier within 2 business days, retro on every use. Its existence is what makes
+  "no gate skipping" enforceable the rest of the time: when the legitimate
+  emergency path is defined, an undefined bypass has no excuse.
+
 ## AI-specific model risk
 
 For any feature where an LLM makes or influences a decision:

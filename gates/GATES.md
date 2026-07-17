@@ -24,6 +24,20 @@ Two entry paths share the back half of the pipeline:
 
 After GC: standard pipeline from Stage 04 — G4, G5, G6, G7 apply per tier.
 
+**Maintenance lane** (routine hygiene): one `MAINT-YYYY-MM` batch dossier
+(`templates/MAINTENANCE.md`) reuses GC — the batch's changelog review + green
+verify + clean audit stands in for per-package recon; majors and sensitive
+libraries eject to individual changes. `gate-check.sh GC MAINT-YYYY-MM` applies.
+
+## GE — Break-glass (emergency; time-ordered inversion of the pipeline)
+
+| | |
+| --- | --- |
+| Trigger | ONLY: exploit in the wild / active customer harm / hard external deadline — declared by a **named human with authority**, never self-invoked by the AI |
+| At the time | `BREAK-GLASS.md` Part A filled as the fix happens: authorizer, peer eyes, smallest-scope fix, verify evidence (degradation disclosed, never zero), rollback, DECISIONS.log entry at deploy time |
+| Within 2 business days | Part B: retrospective CHANGE/RECON, undegraded verify, retrospective G5 review + G6 scans, retroactive change record, and a retro answering: justified? if the normal path was too slow for legitimate work, what gets fixed in the path? |
+| Fails if | Documented after the fact; invoked for convenience; Part B misses its deadline (that's an incident); the same justified trigger recurs without a path fix |
+
 ## G0 — Idea Approved (Ideate → Discover)
 
 | | |

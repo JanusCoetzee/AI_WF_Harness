@@ -44,6 +44,15 @@ is the change ID: use `FIN-4821` / `#123` throughout, not a parallel `CHG-###`.
 - `docs/harness/changes/CHG-###/CHANGE.md` — then straight into **B1 Reconnaissance**.
   Only docs/typo-level trivia may waive recon, and the waiver is written down.
 
+## Adjacent lanes (not this stage)
+
+- **Routine hygiene** (dependency bumps, config rot): the maintenance lane —
+  `/harness-maintain`, one `MAINT-YYYY-MM` batch dossier, one GC. Don't write
+  fifteen CHANGE.md files for fifteen patch bumps.
+- **Emergencies** (exploit in the wild, P1 hotfix): `/harness-breakglass` — gate
+  GE's act-first protocol with a mandatory retrospective dossier. Don't force an
+  emergency through intake, and don't let a non-emergency borrow the siren.
+
 ## Anti-patterns
 
 - Tiering by repo instead of by change — in both directions.

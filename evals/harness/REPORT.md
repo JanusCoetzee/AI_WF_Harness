@@ -3,9 +3,9 @@
 | Field | Value |
 | --- | --- |
 | Date | 2026-07-17 (updated same day with scenario 3) |
-| Scenarios | greenfield payment-exception triage · brownfield interest-rounding drift · **model upgrade under deprecation deadline** |
+| Scenarios | greenfield payment-exception triage · brownfield interest-rounding drift · model upgrade under deprecation deadline · **break-glass: actively exploited RCE** |
 | Bar | MUST 100%, SHOULD ≥ 80% |
-| Result | **All three scenarios SATISFACTORY** (MUST 100%, SHOULD 100%); scenarios 1–2 regression-checked after scenario-3 fixes |
+| Result | **All four scenarios SATISFACTORY** (MUST 100%, SHOULD 100%); earlier scenarios regression-checked after each round of fixes |
 
 ## Scores
 
@@ -29,6 +29,26 @@ prompt (MG-07), no pre-decided deadline rule (MG-09), no cost re-baseline (MG-12
 no HIL comms/override-rate watch (MG-13). Fix: **Model & prompt upgrade protocol**
 added to the EVAL-SPEC template (§1–8), wired from stage 08 and the RUNBOOK
 deprecation row. Scenarios 1–2 re-scored SATISFACTORY after the fix (regression).
+
+### Scenario 4 — break-glass drill (actively exploited RCE in triage-svc)
+
+| Run | MUST | SHOULD | Verdict |
+| --- | --- | --- | --- |
+| run-1 | 10/12 (83%) | 1/3 (33%) | NOT SATISFACTORY |
+| run-2 | 12/12 (100%) | 3/3 (100%) | SATISFACTORY |
+
+The unique property tested: **time-ordered evidence** — documentation as-you-act.
+Run-1 proved the fresh break-glass lane already elicits the control core: precise
+trigger with exploitation evidence, named authorizer and peer, smallest-scope fix,
+verify degradation disclosed with PoC + smoke as the non-negotiable floor, log
+entry at deploy time, Part B in deadline, retro answered. It failed on: no
+**timeline structure** (BG-08 — the act-time proof itself), no **interim
+mitigation** prompt (BG-09 — exposure should shrink in minutes via WAF/flag, not
+at deploy), no **compromise assessment** (BG-13 — patching proves nothing about
+the past when exploitation predates the alert), no **comms-during** prompt
+(BG-14). Fixes: live timeline table, immediate-mitigation and comms-during rows
+in Part A; compromise-assessment item in Part B; skill sequence updated.
+Scenarios 1–3 re-scored SATISFACTORY after the fixes (regression).
 
 ## What run-1 proved the harness already does well
 
@@ -68,5 +88,5 @@ tax-feed trap consumer, characterization-test pinning of wrong behavior.
 ## Repeat policy
 
 Re-run whenever templates/skills change materially; add one new scenario per
-quarter. Model-upgrade scenario done 2026-07-17; next candidates: regulatory-report
-change with restatement, third-party vendor integration.
+quarter. Model-upgrade and break-glass scenarios done 2026-07-17; next candidates:
+regulatory-report change with restatement, third-party vendor integration.

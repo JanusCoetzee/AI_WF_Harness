@@ -31,6 +31,8 @@ delivery artifacts for Financial Services work.
 | --- | --- | --- |
 | Greenfield: payment-exception triage with AI classification | `scenarios/greenfield-payment-triage.md` | Full path G0→G3: tiering, PII-in-prompts, eval specs, HIL, threat model, planning, issues |
 | Brownfield: interest-rounding drift in a legacy statement generator | `scenarios/brownfield-rounding-drift.md` | Fast path: ticket repair, recon, Hyrum contracts, escalation triggers, remediation of past impact |
+| Model upgrade under deprecation deadline | `scenarios/model-upgrade-triage.md` | Operate-phase re-entry: offline floors, shadow cutover, pre-decided deadline rule |
+| Break-glass: actively exploited RCE | `scenarios/breakglass-cve.md` | Gate GE: time-ordered evidence, interim mitigation, compromise assessment |
 
 ## Run
 

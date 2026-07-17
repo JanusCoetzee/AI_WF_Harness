@@ -1,0 +1,25 @@
+# Eval regression manifest — pins each scenario's frozen ground truth to its
+# accepted run. tests/test_harness_evals.py scores every entry on each verify
+# run and in CI; a drop below SATISFACTORY fails the build.
+#
+# Adding a scenario: drop the brief + frozen GT, produce the run BLIND (see
+# README "Reproducing a run"), then add the entry here once accepted.
+scenarios:
+  - name: greenfield
+    ground_truth: evals/harness/ground-truth/greenfield.yaml
+    accepted_run: evals/harness/runs/greenfield/run-2
+  - name: brownfield
+    ground_truth: evals/harness/ground-truth/brownfield.yaml
+    accepted_run: evals/harness/runs/brownfield/run-2
+  - name: model-upgrade
+    ground_truth: evals/harness/ground-truth/model-upgrade.yaml
+    accepted_run: evals/harness/runs/model-upgrade/run-2
+  - name: breakglass
+    ground_truth: evals/harness/ground-truth/breakglass.yaml
+    accepted_run: evals/harness/runs/breakglass/run-2
+  - name: regreport
+    ground_truth: evals/harness/ground-truth/regreport.yaml
+    accepted_run: evals/harness/runs/regreport/run-2
+  - name: vendor
+    ground_truth: evals/harness/ground-truth/vendor.yaml
+    accepted_run: evals/harness/runs/vendor/run-2

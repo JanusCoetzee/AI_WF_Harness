@@ -44,3 +44,32 @@ delivery artifacts for Financial Services work.
 ```
 
 Results and the fix log live in `REPORT.md`.
+
+## Reproducibility (issue #4)
+
+The regression is code, not habit:
+
+- `manifest.yaml` pins each scenario's frozen ground truth to its **accepted run**.
+- `tests/test_harness_evals.py` scores every manifest entry via the same `score.py`
+  CLI — so `pytest`, the local verify loop, and CI all reproduce identical scoring.
+  A guard test fails if a ground truth exists without a manifest entry.
+- `.github/workflows/verify.yml` runs `scripts/verify.sh` (typecheck, lint, tests
+  including this regression) plus a full-history gitleaks scan on every push/PR.
+- Frozen ground truths are never edited to make a run pass; scorer-regex lessons in
+  `REPORT.md` apply to *future* GTs only.
+
+## Reproducing a run / adding a scenario (blind-run protocol)
+
+Designed for ground truths authored by someone other than the run author — the
+strongest form of this eval:
+
+1. **Author** writes `scenarios/<name>.md` (the brief: facts an operator could
+   discover) and `ground-truth/<name>.yaml` (frozen checks). The GT is not shown
+   to whoever produces the run.
+2. **Runner** (human + LLM pair) produces `runs/<name>/run-1/` strictly from the
+   harness's templates and skills applied to the brief — no peeking at the GT,
+   nothing added that the harness didn't elicit.
+3. Score: `.venv/bin/python evals/harness/score.py ground-truth/<name>.yaml runs/<name>/run-1`.
+4. Failures → fix **templates/skills**, never run artifacts; produce `run-2` from
+   the improved harness; rescore until SATISFACTORY.
+5. Add the accepted run to `manifest.yaml` — from then on CI holds the line.

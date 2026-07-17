@@ -5,3 +5,4 @@
 2026-07-17 | G7 passed | janus (SIMULATED - e2e drill) | v0.2.0 deployed to :5050, rollback rehearsed on f0e7bd2, observation 10/10 healthy, bundle evidence/v0.2.0
 2026-07-17 | GC passed | janus (in-session request #6) | GH-6 evals browsable, T2
 2026-07-17 | G4 passed | janus (in-session) | GH-6 verify green 18 tests, red-first evidence in commit
+2026-07-18 | decision | janus | ADR-001: browser stays read-only; edits via git only

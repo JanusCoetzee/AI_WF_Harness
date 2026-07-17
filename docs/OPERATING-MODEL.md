@@ -46,6 +46,16 @@ what evidence existed at the time."* The harness answers structurally:
 - **Evidence** → verify logs, eval scores, threat model, review record — snapshotted
   into `docs/harness/evidence/<release>/` by `scripts/evidence-bundle.sh` at G7.
 
+### Identity and claim integrity (hardening, issue #7)
+
+- **Commits are SSH-signed** (repo-level `commit.gpgsign`, dedicated signing key,
+  local verification via `gpg.ssh.allowedSignersFile`; key registered on the
+  platform as a signing key). "Who" in the trail is cryptographic, not asserted.
+- **Claims are cross-checked mechanically**: `scripts/audit-decisions.sh` (wired
+  into the verify loop, hence the stop hook and CI) fails when any artifact claims
+  a gate passage, GC ratification, break-glass, or release without its matching
+  DECISIONS.log line. An unlogged claim now breaks the build, not just the rules.
+
 ### DECISIONS.log format
 
 One line per event, append-only, committed:

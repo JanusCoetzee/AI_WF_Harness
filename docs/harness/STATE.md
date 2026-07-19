@@ -7,12 +7,12 @@ current — a stale STATE.md is worse than none.
 | --- | --- |
 | Work item | #8 — central doctrine service on ECS (browser + MCP) |
 | Risk tier | T2 |
-| Current stage | 02-architecture (entered at G2 via fast-path escalation: new external interface) |
-| Last gate passed | — (none yet for #8; prior item CHG-001 closed at G7 2026-07-17) |
-| Next gate | G2 — needs: Driver ratifies ADR-002 option choice + threat model |
-| Active milestone | design slice (#8); build slices ticketed only after G2 |
-| Current task | ADR-002 + threat model drafted; awaiting G2 ratification |
-| Blockers | G2 is human-only |
+| Current stage | 03→04 handoff (build slices ticketed: #9 container, #10 doctrine API+authz, #11 MCP) |
+| Last gate passed | G2 (2026-07-19, ADR-002 Option C ratified, DECISIONS.log) |
+| Next gate | G4 — first build slice is #9 (independently shippable) |
+| Active milestone | #9 containerized browser (~half day, proof: docker run + /api/health) |
+| Current task | start #9 on Driver's go |
+| Blockers | none |
 | UNVERIFIED items | none |
 
 ## Session handoff notes

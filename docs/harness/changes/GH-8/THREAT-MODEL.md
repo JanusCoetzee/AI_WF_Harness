@@ -58,3 +58,4 @@ context**, (3) git tag→content store, (4) CI→ECR→ECS supply chain,
 | 2 | Single AWS account, internal subnets; no public exposure | janus | revisit if a second org/account adopts |
 | 3 | Doctrine signing key has no passphrase (carried from issue #7) | janus | revisit at T1 use of the harness |
 | 4 | Harvester boundary is modeled but deferred; full delta review before that slice ships | janus | at harvester slice G2/G6 |
+| 5 | RBAC enforced at retrieval boundary only (ADR-002 amendment): service filters by SSO role claims before content enters LLM context; unlabeled content = most restrictive (fail-closed). v1 policy: all-authenticated-read-all while doctrine is Internal-org | janus | before any Confidential+ content is served |

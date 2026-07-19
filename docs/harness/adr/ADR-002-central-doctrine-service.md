@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Proposed (G2 pending) |
+| Status | Accepted (G2 ratified 2026-07-19, DECISIONS.log) |
 | Date | 2026-07-19 |
 | Deciders | janus (Driver) |
 | REQs served | #8 (multi-team deployment of the harness) |
@@ -81,8 +81,28 @@ offline* (IDE hooks, repo CI) and *evidence must be versioned with the code it
 governs*. Option A satisfies the invariants but fails the stated goal
 (multi-team scale without drift); Option B fails both invariants.
 
-The AI (pair) recommended Option C; the Driver's ratification and reasoning are
-recorded at G2 in DECISIONS.log.
+The AI (pair) recommended Option C; the Driver ratified it at G2 (2026-07-19,
+DECISIONS.log), noting the harness will operate in a controlled environment.
+
+### Amendment at ratification — RBAC (Driver requirement)
+
+Access to certain doctrine/derived content will be role-restricted. The
+architectural rule, fixed here because it cannot be retrofitted later:
+
+> **RBAC is enforced at the retrieval boundary, never inside the model.** An
+> LLM cannot be trusted to withhold content that has already entered its
+> context; the only sound control point is what the service allows into
+> context in the first place. The MCP/HTTP service — deterministic code behind
+> SSO — evaluates the caller's identity and role claims *before* serving
+> content. A model told "don't reveal X" is a policy suggestion; a service
+> that never returns X is a control.
+
+Mechanics: caller identity comes from SSO/OIDC claims (team, role) presented at
+the ALB; every content item carries a classification/audience label in the
+manifest; the service filters fail-closed (unlabeled = most restrictive).
+Build slice 1 implements the authorization interface with an
+all-authenticated-may-read-all policy (current doctrine is Internal-org);
+tightening to real roles is then a policy change, not an architecture change.
 
 ## Contracts (defined before implementation)
 

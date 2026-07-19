@@ -7,3 +7,4 @@
 2026-07-17 | G4 passed | janus (in-session) | GH-6 verify green 18 tests, red-first evidence in commit
 2026-07-18 | decision | janus | ADR-001: browser stays read-only; edits via git only
 2026-07-19 | intake | janus | #8 central doctrine service; escalation trigger (new external interface) -> enter at G2, T2, fast path exited
+2026-07-19 | G2 passed | janus | #8 ADR-002 Option C ratified (controlled environment); RBAC required for restricted content -> enforce at retrieval layer (service authz), never in-model

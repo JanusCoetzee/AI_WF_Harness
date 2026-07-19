@@ -20,6 +20,6 @@ current — a stale STATE.md is worse than none.
 Three bullets max, overwritten each session-end: what just happened, what's next,
 any landmine the next session must know about.
 
-- #8 opened; ADR-002 (3 options, C recommended) + T2 threat model drafted; G2 awaits Driver.
-- After G2: ticket build slices (containerize browser; MCP endpoint) via /harness-issues.
-- Landmine: no "latest" doctrine endpoint ever — version pin is a contract (ADR-002).
+- #9 shipped+proven (docker --read-only, healthy, pip-audit clean); Driver packaging/testing the container independently; G5 review of #9 open.
+- Next: #10 doctrine API+authz (blocks #11 MCP); Driver may author blind ground truth in evals/harness/ground-truth/ first — check before building.
+- Landmine: no "latest" doctrine endpoint ever (ADR-002); RBAC lives at the retrieval boundary, never in-model (ADR-002 amendment).

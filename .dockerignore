@@ -1,0 +1,15 @@
+.git
+.venv
+.ruff_cache
+.coverage
+__pycache__
+**/__pycache__
+docs
+evals
+gates
+stages
+templates
+tests
+scripts
+.claude
+.github

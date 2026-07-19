@@ -8,10 +8,10 @@ current — a stale STATE.md is worse than none.
 | Work item | #8 — central doctrine service on ECS (browser + MCP) |
 | Risk tier | T2 |
 | Current stage | 03→04 handoff (build slices ticketed: #9 container, #10 doctrine API+authz, #11 MCP) |
-| Last gate passed | G2 (2026-07-19, ADR-002 Option C ratified, DECISIONS.log) |
-| Next gate | G4 — first build slice is #9 (independently shippable) |
-| Active milestone | #9 containerized browser (~half day, proof: docker run + /api/health) |
-| Current task | start #9 on Driver's go |
+| Last gate passed | G4 for #9 (2026-07-19, docker proof healthy, DECISIONS.log) |
+| Next gate | G5 review of #9 (human), then build #10 doctrine API |
+| Active milestone | #10 doctrine API + authz interface (~1 day; blocks #11 MCP) |
+| Current task | #9 done+proven; awaiting review or go on #10 |
 | Blockers | none |
 | UNVERIFIED items | none |
 

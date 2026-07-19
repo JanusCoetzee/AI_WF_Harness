@@ -6,13 +6,22 @@ Run:  python3 app/server.py   →  http://localhost:5050
 from __future__ import annotations
 
 import html
+import os
 import re
 from pathlib import Path
 
 from flask import Flask, abort, jsonify, render_template
 from markdown import markdown as md_render
 
-ROOT = Path(__file__).resolve().parent.parent
+
+def _resolve_root() -> Path:
+    """Content root: HARNESS_ROOT env (container: the read-only mount, #9),
+    else the repo this app lives in (local dev, unchanged behavior)."""
+    env = os.environ.get("HARNESS_ROOT")
+    return Path(env).resolve() if env else Path(__file__).resolve().parent.parent
+
+
+ROOT = _resolve_root()
 MD_EXTENSIONS = ["tables", "fenced_code", "sane_lists"]
 
 app = Flask(__name__)
@@ -191,4 +200,5 @@ def api_health():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5050, debug=False)
+    app.run(host=os.environ.get("HOST", "127.0.0.1"),
+            port=int(os.environ.get("PORT", "5050")), debug=False)

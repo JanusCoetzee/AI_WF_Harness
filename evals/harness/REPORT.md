@@ -13,6 +13,7 @@
 | --- | --- | --- | --- | --- | --- |
 | run-1 | 17/18 (94%) | 2/4 (50%) | 12/13 (92%) | 2/3 (67%) | NOT SATISFACTORY |
 | run-2 | 18/18 (100%) | 4/4 (100%) | 13/13 (100%) | 3/3 (100%) | SATISFACTORY |
+| greenfield run-3 (regression check, 2026-08-12) | 18/18 (100%) | 4/4 (100%) | — | — | SATISFACTORY |
 
 ### Scenario 3 — model upgrade (added after scenarios 1–2 closed)
 
@@ -117,6 +118,27 @@ from stage 02.
    patterns should anchor to section headers and tolerate wrapping.
 3. Runs test the artifact-producing front half (G0–G3 / B0–GC). The code-executing
    back half (G4–G7) was exercised separately by the CHG-001 live drill.
+
+## Regression check — greenfield run-3 (2026-08-12)
+
+Templates/gates/scripts changed materially since run-2 (ADR-003–008: constitution
+split, G1's open-questions fail condition, G5's req-trace.sh replacing the 3-REQ
+spot-check, data-scan.sh in the lint step) — the Repeat policy below calls for a
+re-run at exactly this kind of change. Produced `runs/greenfield/run-3/` strictly
+from the current `templates/`/`.claude/skills/harness-{ideate,prd,adr,plan,issues}`
+against the same scenario brief, without reading run-2 first. Scored
+`greenfield.yaml` (unchanged, still the frozen GT): **18/18 MUST, 4/4 SHOULD,
+SATISFACTORY** — the harness's front half (G0–G3) still elicits everything the
+frozen ground truth demands after the ADR-003–008 batch. Not promoted to
+`manifest.yaml`'s pinned `accepted_run` (that's a decision for whoever owns this
+suite, not an automatic side effect of a regression check) — run-2 stays the CI
+baseline; run-3 is dated evidence this check happened and passed.
+
+Not covered by this check: G4–G7 (this scenario, like the other five, only
+produces front-half artifacts — see Honest limitations #3), and Stage 05/08
+specifically, which no scenario here reaches at all (`review-g5.md`/`retro-g8.md`
+exist for exactly that gap but have no frozen ground truth yet — see the harness's
+own GitHub Issues for that follow-up).
 
 ## Repeat policy
 

@@ -1,0 +1,78 @@
+# Ground truth — review-g5: paysvc idempotent payment retry (Stage 05 / G5).
+# Written and frozen BEFORE any run, by an author who did not produce the run
+# and has not looked at run output. Author is deliberately not the same person
+# who wrote/fixed req-trace.sh or the review skill (GH-16 blind-run protocol,
+# evals/harness/README.md).
+scenario: review-g5
+thresholds: { must_pct: 100, should_pct: 80 }
+checks:
+  - id: RG-01
+    level: MUST
+    desc: Adversarial review names the check-then-act / TOCTOU race as a finding
+    artifact: "review-record.md"
+    pattern: 'TOCTOU|check-then-act|race condition|toctou'
+  - id: RG-02
+    level: MUST
+    desc: Finding cites the exact defect site, retry.py line 47 (the query-before-insert gap)
+    artifact: "review-record.md"
+    pattern: 'retry\.py:?\s*(lines?\s*)?47'
+  - id: RG-03
+    level: MUST
+    desc: Flags the weakened/test-theater assertion — retry-twice test never checks charge_gateway.retry call count
+    artifact: "review-record.md"
+    pattern: 'call.?count|assert(ion)?.*call|no assertion.*(charge_gateway|call)|weakened (test|assert)'
+  - id: RG-04
+    level: MUST
+    desc: Concrete failure scenario for the race — production retry-on-timeout policy firing near-simultaneous duplicate requests, not an abstract "could race"
+    artifact: "review-record.md"
+    pattern: 'retry-on-timeout|latency spike|milliseconds|double charge|duplicate (real )?charge|second (real )?charge'
+  - id: RG-05
+    level: MUST
+    desc: T1 tier — flags that only one reviewer (t.owens) is listed when two are required
+    artifact: "review-record.md"
+    pattern: 'second reviewer|only one reviewer|one reviewer.*(listed|named)|T1.*2 reviewer|two reviewers required'
+  - id: RG-06
+    level: MUST
+    desc: Recommends splitting before human review — diff exceeds the ~500-line ceiling (612 changed lines)
+    artifact: "review-record.md"
+    pattern: '612|exceed.*500|500.?line|split.*(PR|diff|review)'
+  - id: RG-07
+    level: MUST
+    desc: Full REQ trace covers REQ-091 (ADR-005) — not just a 3-sample spot-check
+    artifact: "review-record.md"
+    pattern: 'REQ-091'
+  - id: RG-08
+    level: MUST
+    desc: Full REQ trace covers REQ-092
+    artifact: "review-record.md"
+    pattern: 'REQ-092'
+  - id: RG-09
+    level: MUST
+    desc: Full REQ trace covers REQ-093
+    artifact: "review-record.md"
+    pattern: 'REQ-093'
+  - id: RG-10
+    level: MUST
+    desc: Findings are ranked by severity, not just listed
+    artifact: "review-record.md"
+    pattern: '[Ss]everity'
+  - id: RG-11
+    level: MUST
+    desc: Record states the AI self-review approves nothing / is input only — human approval required
+    artifact: "review-record.md"
+    pattern: 'approves? nothing|input only|counts for nothing|does not approve|human review (is )?required'
+  - id: RG-12
+    level: SHOULD
+    desc: Notes the schema carries a unique index the application code never relies on (no IntegrityError handling / row lock) — contradiction between migration and code
+    artifact: "review-record.md"
+    pattern: 'unique index|IntegrityError|row.?level lock'
+  - id: RG-13
+    level: SHOULD
+    desc: 'Challenges the PR''s own risk assessment ("Area of least confidence: none") rather than taking it at face value'
+    artifact: "review-record.md"
+    pattern: 'least confidence|overconfiden|understat(e|ed|es) (the )?risk'
+  - id: RG-14
+    level: SHOULD
+    desc: Verify-green evidence is treated as necessary but not sufficient — record notes tests passing did not catch the race (coverage/verify blind spot)
+    artifact: "review-record.md"
+    pattern: "verify (was |is )?green|coverage (did not|didn't|doesn't) catch|tests? pass(ed|ing)?.*(missed|didn't catch|blind spot)|false confidence|green verify log"

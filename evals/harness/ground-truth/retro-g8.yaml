@@ -1,0 +1,72 @@
+# Ground truth — retro-g8: paysvc fortnightly retro (Stage 08 / G8).
+# Written and frozen BEFORE any run, by an author who did not produce the run
+# and has not looked at run output (GH-16 blind-run protocol,
+# evals/harness/README.md).
+scenario: retro-g8
+thresholds: { must_pct: 100, should_pct: 80 }
+checks:
+  - id: RT-01
+    level: MUST
+    desc: Drift sweep (ADR-006) flags CHG-101's RECON claim ("cookies exclusively, no bearer-token path") as broken by CHG-108's bearer-token addition
+    artifact: "RETRO*.md"
+    pattern: 'CHG-101[\s\S]{0,400}(bearer.?token|no longer holds|stale|broken|drift)|bearer.?token[\s\S]{0,400}CHG-101'
+  - id: RT-02
+    level: MUST
+    desc: Drift sweep also reports the sampled claims that still hold (CHG-104 and/or CHG-110) — a real sweep, not a cherry-picked single row
+    artifact: "RETRO*.md"
+    pattern: 'CHG-104[\s\S]{0,200}(still holds|holds|unchanged)|CHG-110[\s\S]{0,200}(still holds|holds|unchanged)'
+  - id: RT-03
+    level: MUST
+    desc: Gate performance table records CHG-107 shipping without a verify log, caught at the G4 gate-check
+    artifact: "RETRO*.md"
+    pattern: 'CHG-107[\s\S]{0,200}(verify log|G4)|verify log[\s\S]{0,200}CHG-107'
+  - id: RT-04
+    level: MUST
+    desc: AI-pairing audit records the shine — CHG-108's self-review caught the missing token-auth audit-log entry before human review
+    artifact: "RETRO*.md"
+    pattern: 'CHG-108[\s\S]{0,200}audit.?log|audit.?log[\s\S]{0,200}CHG-108'
+  - id: RT-05
+    level: MUST
+    desc: AI-pairing audit records the burn — CHG-107's ~40 min flaky-test thrash, fixed by freezegun/freeze_time, with a proposed rule change
+    artifact: "RETRO*.md"
+    pattern: 'freezegun|freeze_time|flaky.*(test|integration)'
+  - id: RT-06
+    level: MUST
+    desc: Carries forward the still-undone action from the last retro (contract test for the tax-reporting feed's rounding dependency, owner m.olsen)
+    artifact: "RETRO*.md"
+    pattern: 'tax.?report|contract test'
+  - id: RT-07
+    level: MUST
+    desc: Tracks the still-open INC-2026-014 post-incident action (dedupe key for all outbound notification retries) as outstanding, not silently dropped
+    artifact: "RETRO*.md"
+    pattern: 'INC-2026-014|dedupe key'
+  - id: RT-08
+    level: MUST
+    desc: Actions table carries owner (m.olsen) through to the new retro, not just a description
+    artifact: "RETRO*.md"
+    pattern: 'm\.olsen'
+  - id: RT-09
+    level: MUST
+    desc: Both outstanding actions (tax-feed contract test, notification dedupe) are marked not done / overdue rather than presented as closed
+    artifact: "RETRO*.md"
+    pattern: 'not (yet )?done|overdue|outstanding|still open'
+  - id: RT-10
+    level: MUST
+    desc: Feed-forward section is populated with concrete next-cycle items, not left as a stub heading
+    artifact: "RETRO*.md"
+    pattern: 'Feed-forward\s*\n+[^\n#]+\S'
+  - id: RT-11
+    level: SHOULD
+    desc: Ceremony audit names the full CHANGE.md+RECON.md+GC ceremony run on three small, high-coverage, non-escalating changes as a trim candidate
+    artifact: "RETRO*.md"
+    pattern: 'ceremony|sub-?50|single.?file.*(coverage|change)'
+  - id: RT-12
+    level: SHOULD
+    desc: Gate performance proposes a concrete adjustment (naming what changes, not "tighten process")
+    artifact: "RETRO*.md"
+    pattern: 'GATES\.md|gate-check\.sh|propose[sd]?\b'
+  - id: RT-13
+    level: SHOULD
+    desc: Notes CHG-114 (idempotent retry) has a G5 review record on file rather than treating it as ungated
+    artifact: "RETRO*.md"
+    pattern: 'CHG-114'

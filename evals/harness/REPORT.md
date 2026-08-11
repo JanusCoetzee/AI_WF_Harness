@@ -140,6 +140,46 @@ specifically, which no scenario here reaches at all (`review-g5.md`/`retro-g8.md
 exist for exactly that gap but have no frozen ground truth yet — see the harness's
 own GitHub Issues for that follow-up).
 
+## Back-half coverage — review-g5 / retro-g8 (GH-16, 2026-08-12)
+
+Closes the gap the greenfield run-3 regression check flagged as uncovered:
+`scripts/req-trace.sh` (ADR-005), the G5 adversarial-review flow, and the
+retro brownfield-drift-sweep checklist item (ADR-006) had zero eval coverage
+until now — the original six scenarios only ever reach G0–G3/GC (Honest
+limitations #3, above).
+
+Followed the blind-run protocol properly this time: ground truth for both
+`review-g5.yaml` and `retro-g8.yaml` was authored by a session that had not
+produced any run or read either scenario's expected content, then handed the
+briefs to a separately-spawned, context-isolated Runner subagent that never
+saw the ground truth. Scores:
+
+| Scenario | Run | MUST | SHOULD | Verdict |
+| --- | --- | --- | --- | --- |
+| review-g5 | run-1 | 11/11 (100%) | 3/3 (100%)* | SATISFACTORY |
+| retro-g8 | run-1 | 10/10 (100%) | 3/3 (100%) | SATISFACTORY |
+
+\* run-1 first scored 2/3 SHOULD on RG-14 ("verify-green treated as necessary
+but not sufficient") — a scorer false negative, not a harness gap: the record
+said coverage/"19 passed" gave "false confidence" and a reviewer reading only
+the "green verify log" would miss the race, just not in the exact wording the
+regex anchored to. Widened the pattern (not yet frozen/promoted at the time),
+rescored SATISFACTORY. Same lesson as MG-09 in Honest limitations #2 — anchor
+GT patterns to concepts, not exact phrasing.
+
+Both `run-1`s are strong on substance, not just regex-passing: review-g5's
+record correctly identifies the planted TOCTOU race as Critical, traces it to
+the stated production retry-on-timeout load pattern for a concrete (not
+hypothetical) double-charge scenario, and separately catches a REQ-093
+timestamp-field gap and an unhandled-exception audit hole that weren't
+explicitly planted as findings to catch. retro-g8's record correctly
+identifies CHG-101 as the one drifted claim of three sampled, declines to trim
+`RECON.md` itself (reasoning from the drift sweep's own result that recon is
+what caught the drift), and flags the `m.olsen` owner-load pattern across two
+consecutive retros unprompted. Both promoted to `manifest.yaml`'s
+`accepted_run` — CI now holds the line on Stage 05/08 the same way it already
+does for the other six.
+
 ## Repeat policy
 
 Re-run whenever templates/skills change materially; add one new scenario per

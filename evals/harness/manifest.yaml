@@ -23,3 +23,9 @@ scenarios:
   - name: vendor
     ground_truth: evals/harness/ground-truth/vendor.yaml
     accepted_run: evals/harness/runs/vendor/run-2
+  - name: review-g5
+    ground_truth: evals/harness/ground-truth/review-g5.yaml
+    accepted_run: evals/harness/runs/review-g5/run-1
+  - name: retro-g8
+    ground_truth: evals/harness/ground-truth/retro-g8.yaml
+    accepted_run: evals/harness/runs/retro-g8/run-1

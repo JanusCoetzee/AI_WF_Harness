@@ -10,6 +10,7 @@ import os
 import re
 from pathlib import Path
 
+import bleach
 from flask import Flask, abort, jsonify, render_template
 from markdown import markdown as md_render
 
@@ -23,6 +24,28 @@ def _resolve_root() -> Path:
 
 ROOT = _resolve_root()
 MD_EXTENSIONS = ["tables", "fenced_code", "sane_lists"]
+
+# GH-14 / ADR-009: python-markdown passes raw HTML in .md sources through
+# unchanged, and page.html renders the result with `| safe`. Allowlist to
+# exactly what MD_EXTENSIONS + base markdown legitimately produce (RECON.md
+# confirmed this set against every doc in the repo) — anything else (script,
+# iframe, event-handler attributes, ...) is stripped, not passed through.
+SAFE_TAGS = [
+    "p", "br", "hr", "em", "strong", "code", "pre",
+    "h1", "h2", "h3", "h4", "h5", "h6",
+    "ul", "ol", "li",
+    "table", "thead", "tbody", "tr", "th", "td",
+    "blockquote", "a", "img",
+]
+SAFE_ATTRS = {
+    "a": ["href", "title"],
+    "img": ["src", "alt", "title"],
+    "code": ["class"],  # fenced_code's "language-xxx" marker
+}
+
+
+def _sanitize(rendered_html: str) -> str:
+    return bleach.clean(rendered_html, tags=SAFE_TAGS, attributes=SAFE_ATTRS, strip=True)
 
 app = Flask(__name__)
 
@@ -178,9 +201,9 @@ def page(section_key: str, slug: str):
     elif path.name == "SKILL.md":
         _, desc, md_body = _parse_skill(path)
         intro = f"<p class='skill-desc'>{html.escape(desc)}</p>" if desc else ""
-        body = intro + md_render(md_body, extensions=MD_EXTENSIONS)
+        body = intro + _sanitize(md_render(md_body, extensions=MD_EXTENSIONS))
     else:
-        body = md_render(path.read_text(encoding="utf-8"), extensions=MD_EXTENSIONS)
+        body = _sanitize(md_render(path.read_text(encoding="utf-8"), extensions=MD_EXTENSIONS))
     return render_template(
         "page.html", sections=catalog(), section=section, item=item, body=body,
         active=(section_key, slug),

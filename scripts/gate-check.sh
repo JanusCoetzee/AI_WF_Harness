@@ -2,7 +2,11 @@
 # gate-check.sh — mechanical half of gate passage: asserts required evidence
 # artifacts exist (and are non-trivially filled) before a gate can be approved.
 # Human approval + DECISIONS.log entry are still required; this only checks (a).
-# Usage: scripts/gate-check.sh G0|G1|G2|G3|G4|G5|G6|G7
+# Usage: scripts/gate-check.sh G0|G1|G2|G3|G5|G6|G7 [work-item-id]   (evidence
+#          under docs/harness/changes/<id>/; omit id for the flat top-level
+#          path — G4's verify logs and G7's evidence bundle stay global,
+#          keyed by timestamp/version rather than work item)
+#        scripts/gate-check.sh G4
 #        scripts/gate-check.sh GC [CHG-###]   (brownfield fast path; defaults to newest change)
 set -uo pipefail
 
@@ -27,6 +31,19 @@ need_grep() {
     echo "  ✓ $f contains /$pattern/"
   else
     echo "  ✗ $f lacks /$pattern/  ($why)"; FAILS=$((FAILS+1))
+  fi
+}
+
+# Full-workflow gates (G0/G1/G2) file evidence per work item under
+# $H/changes/<id>/, same convention as the brownfield fast path (GC) — not at
+# a flat top-level path. Resolve: explicit <id> arg wins; else fall back to
+# the flat path for repos that still use it.
+evidence_dir() {
+  local id="$1"
+  if [[ -n "$id" ]]; then
+    echo "$H/changes/$id"
+  else
+    echo "$H"
   fi
 }
 
@@ -62,25 +79,29 @@ case "$GATE" in
     fi
     ;;
   G0)
-    need_file "$H/IDEA.md" "problem statement + kill criteria + tier"
-    need_grep 'T[123]' "$H/IDEA.md" "risk tier must be assigned"
-    need_grep '[Kk]ill criteria' "$H/IDEA.md" "kill criteria required"
+    D="$(evidence_dir "${2:-}")"
+    need_file "$D/IDEA.md" "problem statement + kill criteria + tier"
+    need_grep 'T[123]' "$D/IDEA.md" "risk tier must be assigned"
+    need_grep '[Kk]ill criteria' "$D/IDEA.md" "kill criteria required"
     ;;
   G1)
-    need_file "$H/PRD.md" "locked requirements"
-    need_grep 'REQ-[0-9]{3}' "$H/PRD.md" "numbered requirements are the traceability spine"
-    need_grep '[Nn]on-goals' "$H/PRD.md" "explicit non-goals required"
+    D="$(evidence_dir "${2:-}")"
+    need_file "$D/PRD.md" "locked requirements"
+    need_grep 'REQ-[0-9]{3}' "$D/PRD.md" "numbered requirements are the traceability spine"
+    need_grep '[Nn]on-goals' "$D/PRD.md" "explicit non-goals required"
     ;;
   G2)
+    D="$(evidence_dir "${2:-}")"
     ls "$H"/adr/ADR-*.md >/dev/null 2>&1 \
       && echo "  ✓ ADRs present: $(ls "$H"/adr/ADR-*.md | wc -l | tr -d ' ')" \
       || { echo "  ✗ no ADRs in $H/adr/"; FAILS=$((FAILS+1)); }
-    need_file "$H/THREAT-MODEL.md" "per tier: full STRIDE or boundary table"
+    need_file "$D/THREAT-MODEL.md" "per tier: full STRIDE or boundary table"
     ;;
   G3)
-    need_file "$H/PLAN.md" "ratified milestone plan"
-    need_grep 'M0' "$H/PLAN.md" "walking skeleton milestone required"
-    need_grep '[Dd]emo command' "$H/PLAN.md" "every milestone needs a demo command"
+    D="$(evidence_dir "${2:-}")"
+    need_file "$D/PLAN.md" "ratified milestone plan"
+    need_grep 'M0' "$D/PLAN.md" "walking skeleton milestone required"
+    need_grep '[Dd]emo command' "$D/PLAN.md" "every milestone needs a demo command"
     ;;
   G4)
     ls "$H"/evidence/verify-*.log >/dev/null 2>&1 \
@@ -93,24 +114,27 @@ case "$GATE" in
     fi
     ;;
   G5)
-    need_file "$H/review-record.md" "human review record (names, tier-correct count)"
-    need_grep '[Rr]eviewer' "$H/review-record.md" "named reviewer(s) required"
-    need_grep '[Vv]erdict|[Aa]pprove' "$H/review-record.md" "an explicit verdict required"
-    need_grep '[Tt]raceability' "$H/review-record.md" "traceability spot-check must be recorded"
+    D="$(evidence_dir "${2:-}")"
+    need_file "$D/review-record.md" "human review record (names, tier-correct count)"
+    need_grep '[Rr]eviewer' "$D/review-record.md" "named reviewer(s) required"
+    need_grep '[Vv]erdict|[Aa]pprove' "$D/review-record.md" "an explicit verdict required"
+    need_grep '[Tt]raceability|REQ.trace' "$D/review-record.md" "full REQ trace must be recorded (ADR-005; run scripts/req-trace.sh)"
     ;;
   G6)
-    need_file "$H/secure-gate-record.md" "secret scan / dep audit / threat delta / data sweep results"
-    need_grep '[Ss]ecret scan' "$H/secure-gate-record.md" "secret-scan results required"
-    need_grep '[Aa]udit' "$H/secure-gate-record.md" "dependency-audit results required"
-    need_grep '[Tt]hreat' "$H/secure-gate-record.md" "threat-model delta required"
-    need_grep '[Dd]ata' "$H/secure-gate-record.md" "data-handling sweep required"
-    need_grep 'PASS|FAIL|[Vv]erdict' "$H/secure-gate-record.md" "explicit verdict required"
+    D="$(evidence_dir "${2:-}")"
+    need_file "$D/secure-gate-record.md" "secret scan / dep audit / threat delta / data sweep results"
+    need_grep '[Ss]ecret scan' "$D/secure-gate-record.md" "secret-scan results required"
+    need_grep '[Aa]udit' "$D/secure-gate-record.md" "dependency-audit results required"
+    need_grep '[Tt]hreat' "$D/secure-gate-record.md" "threat-model delta required"
+    need_grep '[Dd]ata' "$D/secure-gate-record.md" "data-handling sweep required"
+    need_grep 'PASS|FAIL|[Vv]erdict' "$D/secure-gate-record.md" "explicit verdict required"
     ;;
   G7)
     ls -d "$H"/evidence/*/ >/dev/null 2>&1 \
       && echo "  ✓ evidence bundle dir present" \
       || { echo "  ✗ no evidence bundle (run scripts/evidence-bundle.sh <version>)"; FAILS=$((FAILS+1)); }
-    need_file "$H/RELEASE-CHECKLIST.md" "filled release checklist incl. rollback rehearsal"
+    D="$(evidence_dir "${2:-}")"
+    need_file "$D/RELEASE-CHECKLIST.md" "filled release checklist incl. rollback rehearsal"
     ;;
   *)
     echo "usage: $0 G0|G1|G2|G3|G4|G5|G6|G7 | GC [CHG-###]" >&2; exit 64 ;;

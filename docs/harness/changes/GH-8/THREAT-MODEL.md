@@ -59,3 +59,42 @@ context**, (3) git tag→content store, (4) CI→ECR→ECS supply chain,
 | 3 | Doctrine signing key has no passphrase (carried from issue #7) | janus | revisit at T1 use of the harness |
 | 4 | Harvester boundary is modeled but deferred; full delta review before that slice ships | janus | at harvester slice G2/G6 |
 | 5 | RBAC enforced at retrieval boundary only (ADR-002 amendment): service filters by SSO role claims before content enters LLM context; unlabeled content = most restrictive (fail-closed). v1 policy: all-authenticated-read-all while doctrine is Internal-org | janus | before any Confidential+ content is served |
+| 6 | Version/deprecation drift across independent BU instances (ADR-008) is a human governance control, not a harness mechanism — the harness makes the manifest legible (provenance-stamped) but does not block, flag, or refuse a stale instance | janus | revisit if a stale instance is found running an unpatched security-relevant core/skill version (see ADR-008 tripwire) |
+| 7 | Shared artifact registry (`harness-core-vX.Y.Z`, `skill-NAME-vX.Y.Z`) is readable by every BU's build pipeline by default, same trust level as the original org-wide doctrine content — a BU publishing a skill containing BU-Confidential content to the shared namespace by mistake is a cross-BU leak this model does not itself prevent | janus | before any BU-authored skill carries above-Internal content; needs a publish-time classification gate if that happens |
+
+## Delta review — ADR-008 (2026-07-25): independent per-BU instances
+
+ADR-008 supersedes the single-shared-service topology (rows above describing
+"the service" now describe **one instance among N**, one per business unit).
+The invariants carried forward unchanged: read-only service, content
+integrity hash-pinned to signed tags, no write path, enforcement stays local.
+What's new:
+
+- **New trust boundary — shared artifact registry → per-BU build pipeline.**
+  Core harness (`harness-core-vX.Y.Z`) and each skill/hook/workflow
+  (`skill-NAME-vX.Y.Z`) are independently tagged and published once, then
+  pulled by whichever BU instance's Principal Engineer chooses to compose
+  them. This is the same shape as the existing CI→ECR→ECS boundary, applied
+  one layer up the supply chain, and inherits the same mitigations
+  (signed tags, sha256 manifest integrity, least-privilege publish role) —
+  **provided those mitigations are explicitly extended to the skill tag
+  namespace, not just the core namespace**, since skill content also enters
+  LLM context and is therefore in-scope for the "flagship threat" (prompt
+  injection via retrieved content) exactly like doctrine content is today.
+- **Blast radius changed shape, not size.** A registry outage now blocks new
+  *deploys/upgrades* across all BU instances, but — unlike the old single
+  shared runtime service — does not affect any already-running instance
+  (control failure semantics table's "Open — by design" row now applies at
+  the registry layer too, for the same reason: enforcement and runtime
+  availability never depend on the publish path).
+- **New accepted risk, not yet mitigated:** rows 6–7 above. Neither is a
+  STRIDE finding against a specific mechanism (there's no false claim of a
+  control that isn't there); both are honest gaps this ADR chose to leave to
+  governance and cross-BU trust respectively, recorded here so they're
+  visible at G6 rather than rediscovered.
+
+Full STRIDE table update (new registry boundary added):
+
+| Boundary | S | T | R | I | D | E | Mitigations | REQ/ADR |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Shared registry → BU build pipeline | publish role scoped per namespace (core vs. skill) | tag tampering caught by same sha256-manifest integrity check as ADR-002 | publish events logged (extends CloudTrail coverage from CI→ECR) | skill content is in-scope for the Internal-max ceiling identically to doctrine — **not yet enforced for BU-authored skills specifically (risk #7)** | registry outage blocks new pulls only; running instances unaffected | only each namespace's designated publisher (core maintainers; the owning BU for their own skills) can publish to it | signed-tag verification extended to skill namespace; risk #7 open | ADR-002, ADR-008 |

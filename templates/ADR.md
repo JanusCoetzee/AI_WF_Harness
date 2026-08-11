@@ -1,5 +1,9 @@
 # ADR-### — <decision title, stated as a decision>
 
+One ADR = one decision. If this document wants "Decision 1 / Decision 2"
+headings, stop — split it into separate ADR-### files before going further.
+Each ADR must be accepted, rejected, or superseded on its own.
+
 | Field | Value |
 | --- | --- |
 | Status | Proposed / Accepted / Superseded by ADR-### |

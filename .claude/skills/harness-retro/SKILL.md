@@ -17,10 +17,13 @@ Playbook: `stages/08-operate-learn.md`. Template: `templates/RETRO.md`.
    where did it burn time (thrash loops, invented APIs, scope drift, verbose
    detours)? Each burn pattern becomes a proposed rule change to `CLAUDE.md`;
    each shine pattern gets kept deliberately.
-4. **Ceremony audit**: name at least one harness ceremony that produced no value
+4. **Brownfield drift sweep (ADR-006)**: sample N recent `CHG-###` changes and
+   confirm their `RECON.md` claims still hold against current code — catches
+   drift accumulated across many small changes that no single recon would.
+5. **Ceremony audit**: name at least one harness ceremony that produced no value
    this cycle and propose trimming it. A harness that only grows becomes the
    bureaucracy it replaced.
-5. Draft `docs/harness/RETRO-<date>.md` with actions (owner + due date — untracked
+6. Draft `docs/harness/RETRO-<date>.md` with actions (owner + due date — untracked
    actions are audit findings) and the feed-forward list for the next Stage 00.
-6. Offer to apply the agreed `CLAUDE.md`/gate changes in the same session — the
+7. Offer to apply the agreed `CLAUDE.md`/gate changes in the same session — the
    harness is versioned and improved like code.

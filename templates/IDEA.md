@@ -6,6 +6,7 @@
 | Driver | |
 | Sponsor (T1 only) | |
 | Date | |
+| Constitution sections consulted | <CLAUDE.md §s relevant to this idea, e.g. "§6 data handling"> |
 
 ## Problem statement
 

@@ -8,8 +8,10 @@
    reasons to fail it*: correctness bugs, weakened tests, unvalidated boundaries,
    REQ drift, hallucinated APIs. Output attached to the PR as reviewer *input*.
 2. **Human review second**, calibrated by tier (T1 = 2 reviewers, T2 = 1).
-3. **Traceability spot-check:** pick 3 REQs at random; walk each to its code, tests,
-   and acceptance criteria. Any break fails the gate.
+3. **Full traceability trace (ADR-005):** run `scripts/req-trace.sh --md`, which
+   greps every `REQ-###`/`CHG-###` from `PRD.md`/`CHANGE.md` across ADRs, `PLAN.md`,
+   tests, and commits, and paste the resulting table into the review record. Any
+   id with zero hits fails the gate.
 
 ## LLM role
 

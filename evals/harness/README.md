@@ -35,6 +35,13 @@ delivery artifacts for Financial Services work.
 | Break-glass: actively exploited RCE | `scenarios/breakglass-cve.md` | Gate GE: time-ordered evidence, interim mitigation, compromise assessment |
 | Regulatory-report restatement (issue #2) | `scenarios/regreport-restatement.md` | Effective-dating by period, parallel run, restatement disposition, control totals |
 | Vendor integration (issue #3) | `scenarios/vendor-screening.md` | Third-party risk: data leaving the estate, TPRM, fail-closed as a named decision, exit plan |
+| *(back half, GT pending)* Review — idempotent payment retry | `scenarios/review-g5.md` | Stage 05/G5: adversarial self-review of a planted TOCTOU defect + a weakened test, full REQ trace (ADR-005), T1 two-reviewer requirement, PR-size ceiling |
+| *(back half, GT pending)* Retro — fortnightly cycle | `scenarios/retro-g8.md` | Stage 08/G8: brownfield drift sweep (ADR-006) against one stale and two valid recon claims, gate performance, AI-pairing audit, untracked-action detection |
+
+Note on the back-half pair: unlike the six above, these test Stage 05/08 rather
+than G0–G3/GC — see "Honest limitations" in `REPORT.md` for why the original
+six stop short of this. Not yet in `manifest.yaml`/CI regression; added once a
+frozen ground truth and an accepted run exist, per the blind-run protocol below.
 
 ## Run
 

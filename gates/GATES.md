@@ -52,7 +52,7 @@ libraries eject to individual changes. `gate-check.sh GC MAINT-YYYY-MM` applies.
 | --- | --- |
 | Evidence | `PRD.md` with numbered `REQ-###` and testable acceptance criteria; explicit **non-goals**; data classification of every data element touched |
 | Approver | Driver + product/business owner (T1) |
-| Fails if | Any requirement is untestable as written; data classification missing |
+| Fails if | Any requirement is untestable as written; data classification missing; any `REQ-###` has an open question attached in `PRD.md` at approval time (ADR-004) |
 
 ## G2 — Design Approved (Architect → Plan)
 
@@ -82,7 +82,7 @@ libraries eject to individual changes. `gate-check.sh GC MAINT-YYYY-MM` applies.
 
 | | |
 | --- | --- |
-| Evidence | Human review approval(s) per tier (T1 = 2, T2 = 1); AI adversarial self-review attached as *input*; traceability spot-check (pick 3 REQs, walk them to code+tests); review record in `docs/harness/` |
+| Evidence | Human review approval(s) per tier (T1 = 2, T2 = 1); AI adversarial self-review attached as *input*; full REQ trace (`scripts/req-trace.sh`, ADR-005) with zero unresolved ids; review record in `docs/harness/` |
 | Approver | Reviewer(s) — **must not be the Driver; AI approval counts for nothing** |
 | Fails if | Reviewer rubber-stamps > ~500 changed lines in one sitting — split the PR |
 

@@ -13,6 +13,7 @@ a formatting problem.
 | Recon | required / waived-trivial (docs/typo-level only; waiver reason: ___) |
 | Linked records | <audit findings, incidents, regulatory items this change closes or touches — e.g. AUD-####-###; "none" only after checking> |
 | Timing constraints | <freeze windows, batch/statement cycles, reporting deadlines that gate when this may deploy> |
+| Constitution sections consulted | <CLAUDE.md §s relevant to this change, e.g. "§8 brownfield, §5 traceability"> |
 
 ## Intent
 

@@ -14,10 +14,12 @@ Precondition: G1 in `DECISIONS.log` (T1/T2 with novel architecture).
    different options — different shapes, not one favorite plus strawmen. (For
    interface design, the `design-an-interface` skill parallelizes this.)
    Present the trade-offs compactly; the **human chooses**.
-2. Write `docs/harness/adr/ADR-###.md` per decision: options, the discriminating
-   reason, consequences, tripwire for revisiting, REQs served. If you recommended
-   the winning option, say so in the ADR — the audit trail must show the human's
-   own reasoning too.
+2. Write `docs/harness/adr/ADR-###.md` **one file per decision** — never bundle
+   multiple decisions into one ADR under "Decision 1 / Decision 2" headings;
+   split them so each can be accepted, rejected, or superseded independently.
+   Each file: options, the discriminating reason, consequences, tripwire for
+   revisiting, REQs served. If you recommended the winning option, say so in
+   the ADR — the audit trail must show the human's own reasoning too.
 3. Define **contracts first**: API/message schemas, and for every AI behavior the
    runtime-validated output schema (Zod/JSON Schema/pydantic to match the repo).
 4. Draft the threat model per tier (full STRIDE for T1; boundary table for T2),

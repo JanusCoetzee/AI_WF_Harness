@@ -40,6 +40,10 @@ After each release (or fortnightly, whichever is sooner) run `/harness-retro`:
 - Where did the LLM pairing shine, and where did it burn time (thrash loops,
   invented APIs, scope drift)? Update `CLAUDE.md` rules with what you learned —
   **the harness itself is versioned and improved like code.**
+- **Brownfield drift sweep (ADR-006):** sample recent `CHG-###` changes and
+  confirm their `RECON.md` claims still hold against current code — this is
+  the only check for drift that accumulates across many small, individually
+  correct changes rather than within any single one.
 - Which ceremony produced no value this cycle? Propose trimming it. A harness that
   only ever grows becomes the bureaucracy it was built to replace.
 

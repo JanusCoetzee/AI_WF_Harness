@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Accepted (G2 ratified 2026-07-19, DECISIONS.log) |
+| Status | Superseded by ADR-008 (distribution topology only — invariants below carry forward unchanged) |
 | Date | 2026-07-19 |
 | Deciders | janus (Driver) |
 | REQs served | #8 (multi-team deployment of the harness) |

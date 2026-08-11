@@ -21,5 +21,5 @@ Three bullets max, overwritten each session-end: what just happened, what's next
 any landmine the next session must know about.
 
 - #9 shipped+proven (docker --read-only, healthy, pip-audit clean); Driver packaging/testing the container independently; G5 review of #9 open.
-- Next: #10 doctrine API+authz (blocks #11 MCP); Driver may author blind ground truth in evals/harness/ground-truth/ first — check before building.
-- Landmine: no "latest" doctrine endpoint ever (ADR-002); RBAC lives at the retrieval boundary, never in-model (ADR-002 amendment).
+- Next: #10 doctrine API+authz (blocks #11 MCP) — ADR-008 (2026-07-25) supersedes ADR-002's single-shared-service topology with independent per-BU instances; #10's manifest schema MUST add a `skills` array (composed core+skills bill-of-materials) before finalizing, or it'll need rework. ADR-002's API/MCP contracts, read-only invariant, and RBAC-at-retrieval mechanics still apply, just per-instance now.
+- Landmine: no "latest" doctrine endpoint ever (ADR-002, still true); version/deprecation drift across BU instances is deliberately a human governance function, not harness-enforced (ADR-008) — don't build enforcement logic for it.

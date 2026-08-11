@@ -26,6 +26,15 @@ directly into `CLAUDE.md` rule changes.
 | e.g. thrash loop on flaky integration test | Burn | Added "stop after 2 identical failures" rule |
 | e.g. adversarial self-review caught rounding bug pre-G5 | Shine | Keep; add rounding cases to eval dataset |
 
+## Brownfield drift sweep (ADR-006)
+
+Sample N recent `CHG-###` changes; confirm their `RECON.md` claims still hold
+against current code. This catches drift accumulated across many small,
+individually-correct changes that no single recon would have caught.
+
+| CHG-### | RECON.md claim checked | Still holds? | Notes |
+| --- | --- | --- | --- |
+
 ## Ceremony audit
 
 Which harness ceremony produced no value this cycle? Propose the cut. (A harness that

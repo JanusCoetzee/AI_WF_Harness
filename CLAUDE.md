@@ -1,41 +1,39 @@
-# CLAUDE.md — AI Workflow Harness (project operating rules)
+# CLAUDE.md — AI Workflow Harness (project constitution)
 
 You are working inside a project governed by the **AI Workflow Harness**. These rules
 override your default behavior. You are the *pair*, not the *principal*: you propose,
 a human disposes.
 
+This file is the harness **constitution**: durable principles only — the *why* and
+the non-negotiables. Concrete steps, commands, and reference lists (the *how*) live
+in `docs/harness/OPERATING-PROTOCOL.md`, which this file points to but does not
+duplicate. Section numbers below mirror that document's. If this file approaches
+~150 lines, that's a signal procedure has crept back in — split it out at the next
+retro rather than let it grow past that line.
+
+New work items must name which sections below they touch (`IDEA.md` / `CHANGE.md`
+"Constitution sections consulted" field) — citing this file, not just trusting
+familiarity with it.
+
 ## 1. Session start protocol
 
-Before doing substantive work in a session:
-
-1. Read `docs/harness/STATE.md` (current stage, active work item, risk tier).
-   If it doesn't exist, offer to run `/harness-status` to initialize it.
-2. Identify which gate is next and what evidence it requires (`gates/GATES.md`).
-   Two entry paths exist: the full workflow (G0–G3) for project-sized work, and the
-   **brownfield fast path** (`/harness-change` → `/harness-recon` → gate GC) for
-   changes to existing code — which is most work. Both rejoin at Stage 04.
-3. If the user asks for work that belongs to a *later* stage than the current one,
-   say so explicitly and name the missing gate. Proceed only if the user overrides —
-   and record the override in `docs/harness/DECISIONS.log`.
+Before doing substantive work in a session, orient against `STATE.md` and
+`GATES.md`, and name the missing gate rather than skip ahead silently. Mechanics:
+`docs/harness/OPERATING-PROTOCOL.md` §1.
 
 ## 2. The verify loop (after every change)
 
-Run `scripts/verify.sh` (or the commands under `verify:` in `harness.config.yaml`)
-after **every** meaningful change — not at the end of a task:
-
-```
-typecheck → lint → unit tests → evals (if AI feature) → build
-```
+Run verification after **every** meaningful change — not at the end of a task.
 
 - Never report a step as done unless verify passed. If it failed, show the failure.
-- **Standards are failing conditions, not review feedback.** Read `docs/STANDARDS.md`
-  (thresholds in `harness.config.yaml` `standards:`) and write to them from the
-  start — coverage on changed lines, cognitive complexity ceilings, dependency
-  severity limits. Never propose a dependency version carrying a High/Critical
-  vulnerability; check before adding, not at G6.
+- **Standards are failing conditions, not review feedback.** Write to
+  `docs/STANDARDS.md` thresholds from the start. Never propose a dependency version
+  carrying a High/Critical vulnerability; check before adding, not at G6.
 - Prefer changes small enough that a failed verify has one plausible cause.
 - If you cannot run verification (missing tool, no test), say so and mark the change
   `UNVERIFIED` in your summary. Do not let silence imply green.
+
+Commands and pipeline order: `docs/harness/OPERATING-PROTOCOL.md` §2.
 
 ## 3. Types and schemas are the contract (Pocock rules)
 
@@ -51,9 +49,9 @@ typecheck → lint → unit tests → evals (if AI feature) → build
 
 - Work from the current `PLAN.md`. Each milestone must end **runnable and demoable** —
   state the demo command in the milestone.
-- If a task exceeds ~half a day of work, stop and split it in the plan first.
 - Scaffold structure before filling in logic. Walking skeleton beats big-bang.
-- After each milestone: run the demo, then update `STATE.md` progress.
+
+Task-size threshold and post-milestone mechanics: `OPERATING-PROTOCOL.md` §4.
 
 ## 5. Traceability (FinServ rules)
 
@@ -61,15 +59,21 @@ typecheck → lint → unit tests → evals (if AI feature) → build
   fast path. Reference the relevant IDs in: commit messages, test names/descriptions,
   ADRs, and PR descriptions.
 - **The ticket is the prompt.** Work items in Jira/GitHub must meet the Definition
-  of Ready in `templates/ISSUE.md` — a self-contained vertical slice passing the
-  fresh-session test. If a ticket you're handed is too vague to build from, the
-  first act is repairing the ticket (`/harness-issues` Mode B), not writing code.
+  of Ready — a self-contained vertical slice passing the fresh-session test. If a
+  ticket you're handed is too vague to build from, the first act is repairing the
+  ticket (`/harness-issues` Mode B), not writing code.
 - Where a real ticket exists, its key **is** the ID: use `FIN-4821` / `#123` in
   commits and PRs rather than inventing a parallel `CHG-###`.
-- Every non-obvious technical decision gets an ADR (`templates/ADR.md`) — including
-  decisions *you* recommended. "The AI suggested it" is not an audit trail.
+- Every non-obvious technical decision gets an ADR — including decisions *you*
+  recommended. "The AI suggested it" is not an audit trail.
+- **One decision per ADR.** If a write-up needs "Decision 1 / Decision 2"
+  headings inside a single file, that's several ADRs, not one — split before
+  writing it down. Each must stand alone: accepted, rejected, or superseded
+  independently, with its own options and consequences.
 - Append significant decisions, overrides, and gate passages to
-  `docs/harness/DECISIONS.log` as one-line entries: `2026-07-16 | G3 passed | <who> | <link>`.
+  `docs/harness/DECISIONS.log`.
+
+Log line format, ticket/ADR templates: `OPERATING-PROTOCOL.md` §5.
 
 ## 6. Data handling — hard limits
 
@@ -110,12 +114,4 @@ typecheck → lint → unit tests → evals (if AI feature) → build
 - If you spot risk outside your task (security hole, compliance gap, failing eval
   drift), report it in your summary under **Risks noticed** even if unrelated.
 
-## Slash commands
-
-`/harness-status` `/harness-ideate` `/harness-prd` `/harness-adr` `/harness-plan`
-`/harness-issues` `/harness-build` `/harness-review` `/harness-secure`
-`/harness-release` `/harness-retro`
-Brownfield fast path: `/harness-change` `/harness-recon` (with `/harness-issues`
-Mode B for repairing vague inbound tickets)
-Lanes: `/harness-maintain` (routine dependency/config hygiene, one batch dossier)
-`/harness-breakglass` (emergencies only — human-declared, act-first, retro'd)
+Slash command reference: `docs/harness/OPERATING-PROTOCOL.md`.

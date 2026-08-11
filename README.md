@@ -50,7 +50,12 @@ AI_WF_Harness/
 ├── harness.config.yaml    ← risk tiers, verify commands, gate policy
 ├── docs/
 │   ├── PHILOSOPHY.md      ← why the harness works the way it does
-│   └── OPERATING-MODEL.md ← roles, segregation of duties, audit posture
+│   ├── OPERATING-MODEL.md ← roles, segregation of duties, audit posture
+│   └── harness/
+│       └── OPERATING-PROTOCOL.md ← CLAUDE.md's companion: the "how" mechanics
+│                            (session start, verify commands, milestone/traceability
+│                            mechanics, slash-command reference) the constitution
+│                            points to instead of duplicating
 ├── stages/                ← one playbook per stage (00-ideation … 08-operate,
 │                            B0-change-intake + B1-reconnaissance for brownfield)
 ├── gates/GATES.md         ← entry/exit criteria + evidence per gate
@@ -67,6 +72,9 @@ AI_WF_Harness/
     ├── verify.sh          ← the verify loop (typecheck→lint→test→eval→build)
     ├── gate-check.sh      ← asserts a gate's evidence exists before passage
     ├── evidence-bundle.sh ← builds the audit bundle for a release
+    ├── audit-decisions.sh ← cross-checks STATE.md/CHANGE.md claims against DECISIONS.log
+    ├── data-scan.sh       ← verify-time secret/PII pattern scan (ADR-007)
+    ├── req-trace.sh       ← full REQ-### traceability walk for G5 review
     └── hooks/bash-guard.sh← blocks destructive commands at the tool layer
 ```
 
@@ -98,7 +106,7 @@ python3 -m venv .venv && .venv/bin/pip install -r app/requirements.txt
 
 ## Quickstart (adopting the harness in a project)
 
-1. Copy `CLAUDE.md`, `.claude/`, `scripts/`, and `harness.config.yaml` into your repo (or reference this repo as a submodule).
+1. Copy `CLAUDE.md`, `docs/harness/OPERATING-PROTOCOL.md`, `.claude/`, `scripts/`, and `harness.config.yaml` into your repo (or reference this repo as a submodule). `CLAUDE.md` is the constitution (durable *why*); `OPERATING-PROTOCOL.md` is its required companion (the *how* — commands, mechanics, slash-command reference) — copy both.
 2. Edit `harness.config.yaml`: set the project's default risk tier and wire the `verify` commands to your real toolchain.
 3. Create `docs/harness/` in your repo — all working artifacts (PRD, ADRs, plans, gate evidence) live there, versioned with the code.
 4. Start a session: `/harness-status` tells you (and the LLM) which stage you're in and what the next gate demands.

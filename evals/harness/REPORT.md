@@ -180,6 +180,70 @@ consecutive retros unprompted. Both promoted to `manifest.yaml`'s
 `accepted_run` — CI now holds the line on Stage 05/08 the same way it already
 does for the other six.
 
+## Outside-author GT rewrite — regreport-v2 (GH-22, 2026-08-12)
+
+Honest limitations #1 named the suite's weak spot: GT, run, and scorer share
+an author for all six original scenarios. GH-16 proved the outside-author
+pattern works for a new scenario; this closes the loop by applying it
+*retroactively* to one of the original six, per GH-22.
+
+Picked **regreport** (LCR reclassification with discovered misreporting):
+tied with brownfield/model-upgrade/breakglass/vendor at zero independent
+re-check since their `run-2` acceptance on 2026-07-17 (unlike greenfield,
+which got a fresh `run-3` regression check on 2026-08-12), and regulatory
+misreporting carries the highest real-world stakes of the six — the one
+the Driver judged riskiest to leave unaudited.
+
+A context-isolated author, blind to `ground-truth/regreport.yaml`,
+`runs/regreport/**`, and this file's regreport sections, wrote
+`ground-truth/pending/regreport-v2.yaml` (14 checks: 10 MUST, 4 SHOULD)
+purely from `scenarios/regreport-restatement.md`. Scored the existing
+accepted `runs/regreport/run-2` against it:
+
+| GT | MUST | SHOULD | Verdict |
+| --- | --- | --- | --- |
+| regreport.yaml (original, frozen 2026-07-17) | 100% | 100% | SATISFACTORY |
+| regreport-v2.yaml (outside-author, 2026-08-12) | 9/10 (90%) | 4/4 (100%) | **NOT SATISFACTORY** |
+
+**The disagreement, as the ticket asked, is the finding:**
+
+- Two checks (RR-04: engineering barred from contacting the regulator
+  directly; RR-07: the escalation-trigger analysis surfacing the discovered
+  misreporting) first scored as false negatives — the run's content genuinely
+  addresses both, just in a word order/phrasing the first-draft regex didn't
+  anticipate (`run-2` says "t.okafor... owns... all regulator communication",
+  regex expected "regulator... t.okafor"; RECON.md says "\[finding\]...
+  Escalated to Driver + t.okafor", regex expected "escalat(e|ion)..."
+  *before* the finding). Same lesson as MG-09/RG-14 in Honest limitations #2:
+  fixed by widening the not-yet-frozen `regreport-v2.yaml` patterns to accept
+  the reversed order, not by touching the run. Rescored 9/10 → still 9/10 at
+  that point, now for a different reason (RR-05 below), confirming this
+  wasn't done to force a pass.
+- One check is a **genuine, new gap** the original GT never tested: RR-05
+  expects the CHANGE.md's own "Regulated / reported outputs" section to
+  self-identify what regulated report it's about (name "LCR" or "liquidity
+  coverage" within that section's body). `run-2`'s section is populated with
+  real LCR-specific mechanics (dual-run, control totals, lineage, sign-off)
+  but never names "LCR"/"liquidity coverage" *inside that section* — the
+  identification lives only in the document's title, three sections above.
+  `grep -c LCR\|liquidity` against the original frozen `regreport.yaml`
+  confirms it: zero hits, this demand didn't exist before. A principal
+  reviewer opening straight to that section (a plausible reading pattern —
+  it's the section named for exactly this purpose) wouldn't know which
+  regulated report it's reading about without paging back to the title.
+
+**Disposition:** not fixed in `run-2` (frozen-run-artifacts rule — GH-16
+precedent: iterate the harness, not the answer). Filed as a template gap:
+the "Regulated / reported outputs" section header in the CHANGE.md template
+(or the skill prompt that fills it) should instruct restating which
+regulated report/return is affected inside the section itself, not relying
+on inheriting it from the document title. `regreport-v2.yaml` is **not**
+promoted to `manifest.yaml`'s `accepted_run` — that's a call for whoever
+owns this suite next, once (if) the template gap above is fixed and a
+`run-3` produced against the improved prompt. `regreport.yaml` (the
+original frozen GT) is untouched and remains the CI-pinned scorer per
+README's rule against editing frozen GTs.
+
 ## Repeat policy
 
 Re-run whenever templates/skills change materially; add one new scenario per

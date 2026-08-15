@@ -80,3 +80,10 @@ strongest form of this eval:
 4. Failures → fix **templates/skills**, never run artifacts; produce `run-2` from
    the improved harness; rescore until SATISFACTORY.
 5. Add the accepted run to `manifest.yaml` — from then on CI holds the line.
+
+`ground-truth/pending/` holds outside-author GTs not yet promoted (e.g. a
+retroactive rewrite of an *existing* scenario's GT, per GH-22) — kept out of
+`ground-truth/*.yaml` so `test_manifest_covers_all_ground_truths` doesn't
+demand a manifest entry for a GT that scored its accepted run below the bar
+and is waiting on a template fix, not a run fix. Promote by moving it up a
+level and adding the manifest entry once a run scores SATISFACTORY against it.

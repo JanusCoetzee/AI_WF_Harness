@@ -56,9 +56,56 @@ if [[ -f "$H/RELEASE-CHECKLIST.md" ]] && grep -qE '^\| Version' "$H/RELEASE-CHEC
   require_line "G7 passed" "RELEASE-CHECKLIST.md exists (release claimed)"
 fi
 
+
+# 5. DECISIONS.log's own internal chronology (GH-19): dates must be
+# non-decreasing down the file. A misdated/out-of-order entry undermines the
+# log's whole point of being a trustworthy, ordered audit trail.
+echo
+echo "audit-decisions: checking $LOG chronology"
+PREV=""
+PREV_LINE=""
+LINENO=0
+while IFS= read -r line; do
+  LINENO=$((LINENO+1))
+  [[ "$line" =~ ^([0-9]{4}-[0-9]{2}-[0-9]{2})\  ]] || continue
+  DATE="${BASH_REMATCH[1]}"
+  if [[ -n "$PREV" && "$DATE" < "$PREV" ]]; then
+    echo "  ✗ OUT OF ORDER: $LOG:$LINENO dated $DATE comes after a $PREV entry"
+    echo "      prior: $PREV_LINE"
+    echo "      this:  $line"
+    FAILS=$((FAILS+1))
+  fi
+  PREV="$DATE"
+  PREV_LINE="$line"
+done < "$LOG"
+[[ $FAILS -eq 0 ]] && echo "  ✓ $LOG dates are non-decreasing"
+
+# 6. "#<n> closed"-shaped claims vs actual GitHub issue state (GH-20).
+# Best-effort: skip with a warning (not a failure) if gh isn't available or
+# authenticated — this check needs network access CI/offline dev may lack.
+echo
+echo "audit-decisions: checking closed-issue claims against GitHub"
+if ! command -v gh >/dev/null 2>&1 || ! gh auth status >/dev/null 2>&1; then
+  echo "  ~ skipped: gh not installed/authenticated (best-effort check, not enforced)"
+else
+  CLAIMED_CLOSED="$(grep -ohE '(#|GH-)[0-9]+ closed' "$LOG" "$H/STATE.md" 2>/dev/null | grep -oE '[0-9]+' | sort -un)"
+  for n in $CLAIMED_CLOSED; do
+    STATE="$(gh issue view "$n" --json state -q .state 2>/dev/null)"
+    if [[ -z "$STATE" ]]; then
+      echo "  ~ #$n: could not fetch issue state (skipped)"
+    elif [[ "$STATE" != "CLOSED" ]]; then
+      echo "  ✗ #$n claimed closed in $LOG/STATE.md but GitHub reports $STATE"
+      FAILS=$((FAILS+1))
+    else
+      echo "  ✓ #$n confirmed CLOSED on GitHub"
+    fi
+  done
+  [[ -z "$CLAIMED_CLOSED" ]] && echo "  ~ no '#<n> closed' claims found"
+fi
+
 echo
 if [[ $FAILS -gt 0 ]]; then
-  echo "audit-decisions: FAIL ($FAILS unlogged claim(s)) — log them or retract the claims."
+  echo "audit-decisions: FAIL ($FAILS unlogged/inconsistent claim(s)) — log them or retract the claims."
   exit 1
 fi
 echo "audit-decisions: all claims logged."

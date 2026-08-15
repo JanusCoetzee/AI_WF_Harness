@@ -72,7 +72,11 @@ case "$GATE" in
       need_file "$C/RECON.md" "code map, consumers, implicit contracts, characterization tests"
       need_grep '[Gg]o' "$C/RECON.md" "go/no-go recommendation required"
     fi
-    if grep -qE '\|[[:space:]]*[Yy]es[[:space:]]*\|' "$C/CHANGE.md"; then
+    # Matches a "Yes" table-cell answer even wrapped in markdown emphasis
+    # (GH-18: **Yes**) and even when followed by trailing rationale prose in
+    # the same cell — but not the "Yes/No" header cell, since a real Yes/No
+    # answer is never immediately followed by a "/".
+    if grep -qE '\|[[:space:]]*\*{0,2}_{0,2}[Yy]es\*{0,2}_{0,2}([[:space:]]|—|-|\|)' "$C/CHANGE.md"; then
       echo "  ✗ an escalation trigger is answered 'yes' — fast path exits to the full workflow"; FAILS=$((FAILS+1))
     else
       echo "  ✓ no escalation triggers tripped"

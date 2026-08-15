@@ -13,7 +13,10 @@ IDS=()
 collect_ids() {
   local f="$1"
   [[ -f "$f" ]] || return 0
-  grep -oE '(REQ|CHG)-[0-9]+(\.[0-9]+)?' "$f"
+  # Same ticket-key shape scripts/hooks/commit-guard.sh already accepts
+  # (REQ-###, CHG-###, and any short-prefix key like GH-17.1, FIN-4821),
+  # plus the optional .n acceptance-criteria suffix commit-guard.sh doesn't need.
+  grep -oE '[A-Z][A-Z0-9]{1,9}-[0-9]+(\.[0-9]+)?' "$f"
 }
 
 while IFS= read -r id; do

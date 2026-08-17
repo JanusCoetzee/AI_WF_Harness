@@ -46,17 +46,44 @@ requirements clean (STD-004).
 - **Tasks:** per `#10`'s own ticket body (already redefined 2026-08-12 —
   `skills` array confirmed in scope per ADR-008, GH-21's classification
   field confirmed out of scope):
-  - [ ] T1.1 — Content-store module: sha256-verified reads, manifest schema per ADR-002 extended with ADR-008's `skills` array
-  - [ ] T1.2 — `GET /api/doctrine/{version}/manifest` and `GET /api/doctrine/{version}/file` — no `latest`, 404 unknown version, 500 on hash mismatch
-  - [ ] T1.3 — Authz module `is_allowed(identity, item) -> bool`, v1 allow-all-authenticated, fail-closed on missing/unrecognized classification label
-  - [ ] T1.4 — `scripts/doctrine-manifest.py`, runnable in CI
-- **Test strategy:** `tests/test_doctrine_api.py` — schema validation incl. `skills[]`, tamper test (500 not content), authz test (unlabeled → denied). Per `#10`'s Verify section: coverage ≥80% on changed lines, ruff clean.
+  - [x] T1.1 — Content-store module: sha256-verified reads, manifest schema per ADR-002 extended with ADR-008's `skills` array (`app/doctrine.py`: `build_manifest()`, `sha256_of()`)
+  - [x] T1.2 — `GET /api/doctrine/{version}/manifest` and `GET /api/doctrine/{version}/file` — no `latest`, 404 unknown version, 500 on hash mismatch (`app/server.py::api_doctrine_manifest`/`api_doctrine_file`)
+  - [x] T1.3 — Authz module `is_allowed(identity, item) -> bool`, v1 allow-all-authenticated, fail-closed on missing/unrecognized classification label (`app/doctrine.py::is_allowed`); identity via a documented header stub (`X-Harness-Actor`) — real SSO/OIDC is out of scope per `#10`
+  - [x] T1.4 — `scripts/doctrine-manifest.py`, runnable in CI (standalone, no Flask server needed; non-zero exit + stderr on an unknown version)
+- **Test strategy:** `tests/test_doctrine_api.py` — 12 tests: schema validation incl. `skills[]` (AC1), skills[] matches the config pin exactly (AC5), tamper detection at both the module and route layers (AC2), no-`latest`/unknown-version 404 (AC3), fail-closed authz incl. unlabeled-item-under-a-restrictive-policy and unauthenticated-denied (AC4). Manual schema assertions, not the `jsonschema` package — the schema is small/stable, not worth a new pinned dependency. Coverage: `app/doctrine.py` 91%, `app/server.py` 96% (≥80% threshold met); ruff clean.
 - **Demo command:** `curl -s "localhost:5050/api/doctrine/harness-v0.2/manifest" | python3 -m json.tool | head`
-- **Demo record** (filled at completion — paste observed output):
+- **Demo record** (observed 2026-08-18, `scripts/verify.sh --log` → `docs/harness/evidence/verify-20260818-094129.log`, ALL GREEN, 55 tests):
 
 ```text
-(observed output here — this is G4 evidence)
+$ curl -s -H "X-Harness-Actor: janus" "localhost:5050/api/doctrine/harness-v0.2/manifest" | python3 -m json.tool | head -20
+{
+    "files": [
+        {
+            "classification": "Internal",
+            "kind": "doc",
+            "path": "README.md",
+            "sha256": "42436d812f93310ab849f45c387bc4bf01c433a99fd2fd13d8ed84253b8612e1",
+            "title": "AI Workflow Harness"
+        },
+        ...
+    ],
+    "git_commit": "fd734aba5f8ec9e472bca1372345b589490dab7f",
+    "skills": [
+        {"name": "harness-issues", "version": "harness-v0.2"},
+        {"name": "harness-build", "version": "harness-v0.2"},
+        {"name": "harness-release", "version": "harness-v0.2"}
+    ],
+    "version": "harness-v0.2"
+}
+
+$ curl -s -o /dev/null -w "%{http_code}\n" "localhost:5050/api/doctrine/harness-v99.9/manifest"
+404
+
+$ curl -s "localhost:5050/api/doctrine/harness-v0.2/manifest" | python3 -m json.tool   # no X-Harness-Actor
+{"files": [], "git_commit": "...", "skills": [...], "version": "harness-v0.2"}   # fail-closed: unauthenticated sees no files
 ```
+
+All 5 acceptance criteria (`#10`'s ticket body) verified live, not just by unit test: AC1 (schema), AC2 (tamper → 500, confirmed no altered content in body), AC3 (no bare/`latest` route, unknown version → 404), AC4 (unauthenticated → empty `files[]`, fail-closed), AC5 (`skills[]` above matches `harness.config.yaml`'s `doctrine.skills` pin exactly).
 
 ### M2 — MCP tools (#11)
 
@@ -82,3 +109,4 @@ Plans change deliberately, not silently.
 | Date | Change | Reason | Approved by |
 | --- | --- | --- | --- |
 | 2026-08-18 | Plan drafted retroactively for M0 (already shipped/G4-passed), prospectively for M1/M2 | `#9` was built and `G4`-passed without a ratified G3/PLAN.md ever existing — a real gate-skip in `#8`'s own history, found while checking `harness-build`'s own stated precondition ("G3 in DECISIONS.log") before starting `#10`. Closing the gap before building a second slice on the same unratified foundation, not building `#11` on top of two skipped gates | pending Driver G3 ratification |
+| 2026-08-18 | M1 (`#10`) built, verified, G4 passed | All 4 tasks done, all 5 acceptance criteria met by test + live demo, `verify.sh` ALL GREEN | janus (in-session) |

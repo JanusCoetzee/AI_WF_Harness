@@ -111,3 +111,18 @@ release:
   evidence_bundle_dir: docs/harness/evidence
   required_artifacts: [PRD, PLAN, verify-log, review-record, secure-gate-record]
   rollback_plan_required: true
+
+# ---------------------------------------------------------------------------
+# Doctrine service composition pin (#10, ADR-002 + ADR-008). This instance's
+# own bill-of-materials: core doctrine version + which skills it composes,
+# reported verbatim in the manifest's skills[] array. Single BU instance for
+# now (ADR-008) — a registry that publishes/verifies these tags is later,
+# separate work; this pin is just what #10's manifest builder reads.
+# ---------------------------------------------------------------------------
+doctrine:
+  version: harness-v0.2
+  core_version: harness-v0.2
+  skills:
+    - { name: harness-issues, version: harness-v0.2 }
+    - { name: harness-build, version: harness-v0.2 }
+    - { name: harness-release, version: harness-v0.2 }

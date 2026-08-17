@@ -11,8 +11,13 @@ import re
 from pathlib import Path
 
 import bleach
-from flask import Flask, abort, jsonify, render_template
+from flask import Flask, abort, jsonify, render_template, request
 from markdown import markdown as md_render
+
+try:  # package import (pytest from repo root, `from app import server`)
+    from app import doctrine
+except ImportError:  # script run: `python3 app/server.py` puts app/ on sys.path
+    import doctrine
 
 
 def _resolve_root() -> Path:
@@ -220,6 +225,48 @@ def api_health():
     # CHG-001.1: counts derive from the same live catalog scan the UI serves.
     docs, skills = _counts(catalog())
     return jsonify({"status": "ok", "documents": docs, "skills": skills})
+
+
+def _identity_from_request() -> dict:
+    """#10 out-of-scope note (its own ticket body): real SSO/OIDC is not
+    built here — this is the documented stub identity carries until it is.
+    Presence of the header is "authenticated"; it never carries roles yet
+    (v1 authz policy doesn't check any)."""
+    actor = request.headers.get("X-Harness-Actor", "").strip()
+    return {"authenticated": bool(actor), "roles": []}
+
+
+def _build_manifest_or_404(version: str) -> dict:
+    try:
+        return doctrine.build_manifest(ROOT, version, catalog())
+    except KeyError:
+        abort(404, description=f"unknown doctrine version: {version}")
+
+
+@app.route("/api/doctrine/<version>/manifest")
+def api_doctrine_manifest(version: str):
+    manifest = _build_manifest_or_404(version)
+    identity = _identity_from_request()
+    # Filter, don't just gate on fetch — ADR-002's RBAC amendment: the
+    # service controls what enters context, including what a listing reveals.
+    visible = [f for f in manifest["files"] if doctrine.is_allowed(identity, f)]
+    return jsonify({**manifest, "files": visible})
+
+
+@app.route("/api/doctrine/<version>/file")
+def api_doctrine_file(version: str):
+    manifest = _build_manifest_or_404(version)
+    rel_path = request.args.get("path", "")
+    entry = next((f for f in manifest["files"] if f["path"] == rel_path), None)
+    if entry is None:
+        abort(404, description="path not in manifest")
+    identity = _identity_from_request()
+    if not doctrine.is_allowed(identity, entry):
+        abort(403, description="not authorized")
+    try:
+        return jsonify(doctrine.read_file_verified(ROOT, manifest, rel_path))
+    except doctrine.IntegrityError:
+        abort(500, description="content integrity check failed")
 
 
 if __name__ == "__main__":

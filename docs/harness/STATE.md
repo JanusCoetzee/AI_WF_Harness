@@ -7,11 +7,11 @@ current — a stale STATE.md is worse than none.
 | --- | --- |
 | Work item | #8 — central doctrine service on ECS (browser + MCP) |
 | Risk tier | T2 |
-| Current stage | 03→04 handoff (build slices ticketed: #9 container, #10 doctrine API+authz, #11 MCP) |
-| Last gate passed | G4 for #9 (2026-07-19, docker proof healthy, DECISIONS.log) |
-| Next gate | G5 review of #9 (human), then build #10 doctrine API |
-| Active milestone | #10 doctrine API + authz interface (~1 day; blocks #11 MCP) — ticket redefined 2026-08-12, scope now crystal clear |
-| Current task | #9 done+proven; awaiting review. #10 ticket repaired and ready to build (see handoff) |
+| Current stage | 04-implementation — building M1 (#10) per docs/harness/PLAN.md |
+| Last gate passed | G5 for #9, 2026-08-18 (self-review under ADR-011 bootstrap override — NOT independent review; DECISIONS.log, review-record.md at docs/harness/changes/GH-9/) |
+| Next gate | G4 for #10 (build + verify), once M1's tasks are done |
+| Active milestone | M1 — #10 doctrine API + authz interface (docs/harness/PLAN.md; ~1 day; blocks #11 MCP) |
+| Current task | Starting #10's build: content-store module (sha256-verified reads), manifest schema (ADR-002 + ADR-008's skills array), authz module (is_allowed(), fail-closed) |
 | Blockers | none for #8/#9/#10's pipeline. #30 (open) BLOCKS further changes to templates/CHANGE.md's delivery-medium/T3-collapse logic (GH-27/28, ADR-010) or CLAUDE.md §9's hedge rule (GH-29) until a blind-authored eval scenario proves they actually work — see handoff |
 | UNVERIFIED items | none |
 
@@ -20,6 +20,6 @@ current — a stale STATE.md is worse than none.
 Three bullets max, overwritten each session-end: what just happened, what's next,
 any landmine the next session must know about.
 
-- **Harness vendored into AU_YEAR_9_MATH (real external adoption) produced real feedback**: CHG-001 there hit a genuine failure (unresolved "markdown or HTML" hedge survived GC, cost a post-G4 rebuild) — retro at `docs/RETROS/RETRO-2026-08-18.md`. Fixed upstream here as GH-26 (gate-check.sh false-positive on `CHG-###` in prose — real regression test, `tests/test_gate_check.py`, 15 cases, wired into verify.sh permanently), GH-27 (CHANGE.md delivery-medium prompt), GH-28 (T3-light CHANGE.md fields, design decided in ADR-010), GH-29 (CLAUDE.md §9 hedge rule, ported from the field-tested downstream copy). All four GC-ratified and pushed.
-- **#30 is a live blocker** (see top Blockers field): GH-27/28/29 are prompt/template/constitution changes with zero durable eval coverage — only evidence they work is the one incident that motivated them. #30 has detailed acceptance criteria for the blind-authored scenario needed to close this (I'm disqualified as author, same reasoning as GH-16/GH-22's recusals). Don't touch CHANGE.md's delivery-medium/T3 logic or CLAUDE.md §9's hedge rule again until #30 lands.
-- Carried forward, still true: **#10 redefined and ready to build** (skills array in scope per ADR-008, GH-21's classification field explicitly out of scope — see #10's GitHub body, rewritten 2026-08-12). **GH-24** trial 1 succeeded but needs a second trial before formalizing (issue #24, still open). req-trace.sh is honestly red repo-wide (not filed as an issue). GH-22 found an unfixed template gap (RR-05, "LCR" self-identification) — still open.
+- **G3/G5 gate-skip found and closed, not repeated**: asked to "containerize the harness" → clarified to "finish #10/#11" → checked `harness-build`'s own precondition ("G3 in DECISIONS.log") before starting → found #9 was G4-passed 2026-07-19 with **no PLAN.md/G3 ever ratified**. Closed retroactively: `docs/harness/PLAN.md` drafted (M0 #9 retroactive/complete, M1 #10 next, M2 #11 sketched only) and G3-ratified. G5 for #9 also closed via **ADR-011** (new, `docs/harness/adr/ADR-011-g5-bootstrap-override.md`): G5's "must not be the Driver" rule is overridden for T2/T3 work here during single-operator bootstrap — T1 explicitly excluded, 4 named revisit triggers, use-count tripwire at 3 (this is use #1). Review record at `docs/harness/changes/GH-9/review-record.md` — explicitly marked self-review, not independent, top of the file.
+- **Now building #10 (M1)** per `PLAN.md`'s task list: content-store module, `GET /api/doctrine/{version}/manifest`+`/file`, authz module. Every future G5 in this repo must cite ADR-011 the same explicit way GH-9's did, or independent review must actually be found — don't let "self-review" quietly stop being labeled as such.
+- Carried forward: **#30 is a live blocker** (top Blockers field) — no CHANGE.md delivery-medium/T3 or CLAUDE.md §9 hedge-rule changes until it lands. **GH-24** needs a second trial (issue #24, open). `req-trace.sh` is honestly red repo-wide, not scoped per-item (not yet filed). GH-22 found an unfixed template gap (RR-05, "LCR" self-identification), still open.

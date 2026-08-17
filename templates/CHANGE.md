@@ -15,9 +15,23 @@ a formatting problem.
 | Timing constraints | <freeze windows, batch/statement cycles, reporting deadlines that gate when this may deploy> |
 | Constitution sections consulted | <CLAUDE.md §s relevant to this change, e.g. "§8 brownfield, §5 traceability"> |
 
+**T3 shortcut (ADR-010):** if risk tier is T3, collapse **Linked records**,
+**Timing constraints**, and the **Regulated / reported outputs** section below
+into one line — `Regulatory/audit surface: none (T3 — see harness.config.yaml)`
+— unless something in scope is actually reportable, in which case answer the
+fields in full as normal. T1/T2 always answer them in full; a T3 change later
+promoted to T1/T2 must re-expand this line back into the full fields.
+
 ## Intent
 
 Two sentences max: what's wrong or wanted, and what "done" looks like for the requester.
+
+**If this change produces a user-facing document or artifact** (report, page, PDF,
+printed material, dashboard, ...): state its delivery medium / consumption context
+explicitly here — screen-only, print, mobile, offline/printed binder, etc. An
+acceptance criterion that hedges between formats ("X lints clean **or** Y validates")
+is the tell that this question was never actually answered — resolve it here, before
+GC, not by letting the hedge stand in for a decision (CLAUDE.md §9).
 
 ## Acceptance criteria
 

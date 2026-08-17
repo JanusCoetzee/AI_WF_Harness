@@ -18,7 +18,12 @@ need_file() {
   local f="$1" why="$2"
   if [[ ! -s "$f" ]]; then
     echo "  ✗ missing: $f  ($why)"; FAILS=$((FAILS+1))
-  elif grep -qE 'CHANGE_ME|<work item name>|<name>|CHG-###' "$f"; then
+  # GH-26: strip backtick-quoted spans before checking — a doc legitimately
+  # *talking about* the placeholder pattern (e.g. "commits reference the
+  # change ID (`CHG-###` pattern)") always backtick-quotes it, same as the
+  # template's own explanatory prose does; a genuinely unfilled placeholder
+  # (title line, an empty acceptance-criteria row) never is.
+  elif sed -E 's/`[^`]*`//g' "$f" | grep -qE 'CHANGE_ME|<work item name>|<name>|CHG-###'; then
     echo "  ✗ unfilled template: $f  ($why)"; FAILS=$((FAILS+1))
   else
     echo "  ✓ $f"

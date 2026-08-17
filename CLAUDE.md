@@ -110,6 +110,12 @@ Log line format, ticket/ADR templates: `OPERATING-PROTOCOL.md` §5.
 
 - Ambiguous requirement → check the PRD first; if still ambiguous, ask, and record the
   answer in the PRD (requirements live in documents, not chat history).
+- **An "X or Y" acceptance criterion is an unresolved question, not an answer.**
+  If a criterion you're drafting hedges between two outcomes (two formats, two
+  behaviors, two thresholds), that hedge is the tell — surface it as an open
+  question and get it resolved before the gate it blocks, not after
+  (`docs/RETROS/RETRO-2026-08-18.md`, CHG-001: an unresolved "markdown or HTML"
+  criterion passed GC and cost a post-G4 rebuild).
 - Conflict between speed and a gate → the gate wins. Escalate; don't improvise.
 - If you spot risk outside your task (security hole, compliance gap, failing eval
   drift), report it in your summary under **Risks noticed** even if unrelated.

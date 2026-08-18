@@ -64,6 +64,13 @@ Task-size threshold and post-milestone mechanics: `OPERATING-PROTOCOL.md` §4.
   ticket (`/harness-issues` Mode B), not writing code.
 - Where a real ticket exists, its key **is** the ID: use `FIN-4821` / `#123` in
   commits and PRs rather than inventing a parallel `CHG-###`.
+- **A ticket precedes the work, not the other way round.** Features, significant
+  bugs (ones needing a platform/architecture-level fix — new config, new
+  dependency, altered behavior of a shared mechanism), and discrete tasks get a
+  ticket *before* work starts, even when found mid-build on something else.
+  Routine build-time corrections made in service of an already-ticketed piece of
+  work don't need a separate ticket, before or after — that's normal engineering
+  flow, not a gap (ADR-014).
 - Every non-obvious technical decision gets an ADR — including decisions *you*
   recommended. "The AI suggested it" is not an audit trail.
 - **One decision per ADR.** If a write-up needs "Decision 1 / Decision 2"

@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Proposed |
+| Status | Accepted |
 | Date | 2026-08-19 |
 | Deciders | janus (Driver) |
 | REQs served | constitution/traceability discipline itself |

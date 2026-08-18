@@ -20,10 +20,17 @@ Playbook: `stages/08-operate-learn.md`. Template: `templates/RETRO.md`.
 4. **Brownfield drift sweep (ADR-006)**: sample N recent `CHG-###` changes and
    confirm their `RECON.md` claims still hold against current code — catches
    drift accumulated across many small changes that no single recon would.
-5. **Ceremony audit**: name at least one harness ceremony that produced no value
+5. **Pilot container/skills metadata sweep (ADR-013)**: for each `pilot-feedback`
+   issue opened since the last retro, record the image tag/`skills[]` composition
+   it reports (labels or running-container manifest fields — `README.md`'s
+   `pilot-feedback` ask requests them) and check it against the tag currently
+   published to GHCR. Flag anything reported against a superseded tag — triage it
+   as stale, not as a bug in current behavior — same drift discipline as step 4,
+   applied to container versions instead of `RECON.md` claims.
+6. **Ceremony audit**: name at least one harness ceremony that produced no value
    this cycle and propose trimming it. A harness that only grows becomes the
    bureaucracy it replaced.
-6. Draft `docs/harness/RETRO-<date>.md` with actions (owner + due date — untracked
+7. Draft `docs/harness/RETRO-<date>.md` with actions (owner + due date — untracked
    actions are audit findings) and the feed-forward list for the next Stage 00.
-7. Offer to apply the agreed `CLAUDE.md`/gate changes in the same session — the
+8. Offer to apply the agreed `CLAUDE.md`/gate changes in the same session — the
    harness is versioned and improved like code.

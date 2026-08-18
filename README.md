@@ -166,7 +166,12 @@ it?** File a GitHub issue and tag it `pilot-feedback` — that's the actual
 point of this: real usage surfaces things a design session doesn't. Rough
 edges in the MCP tool responses, gaps in what the browser shows, confusing
 error messages, anything — even "this felt fine" is useful signal if you
-say what you were trying to do.
+say what you were trying to do. **Include which version you ran** (ADR-013,
+GH-33) — `docker inspect --format='{{json .Config.Labels}}' <image>` if
+you pulled a published tag, or the running container's own
+`/api/health`/doctrine-manifest `git_commit`/`skills[]` fields either
+way — so retro can tell whether your feedback is about the current build
+or something already fixed in a later one.
 
 ## Quickstart (adopting the harness in a project)
 

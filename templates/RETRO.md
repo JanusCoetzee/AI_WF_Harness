@@ -35,6 +35,22 @@ individually-correct changes that no single recon would have caught.
 | CHG-### | RECON.md claim checked | Still holds? | Notes |
 | --- | --- | --- | --- |
 
+## Pilot container/skills metadata sweep (ADR-013, GH-33)
+
+For each `pilot-feedback`-labeled issue opened since the last retro: which
+image tag and `skills[]` composition produced it, and is that still the
+current published tag? Same purpose as the brownfield drift sweep above —
+catching drift, here between what a pilot participant actually ran and
+what's current — applied to container versions instead of `RECON.md`
+claims. Pull the reported tag/labels from the issue itself (`README.md`
+asks filers to include `docker inspect --format='{{json .Config.Labels}}'
+<image>` output, or the running container's own `/api/health`/manifest
+`git_commit`/`skills[]` fields); compare against the latest tag actually
+published to GHCR.
+
+| Issue # | Image tag | git_commit (short) | skills[] versions | Still current tag? | Notes |
+| --- | --- | --- | --- | --- | --- |
+
 ## Ceremony audit
 
 Which harness ceremony produced no value this cycle? Propose the cut. (A harness that

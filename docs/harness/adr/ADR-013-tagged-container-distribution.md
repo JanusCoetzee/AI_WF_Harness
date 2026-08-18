@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Proposed |
+| Status | Accepted |
 | Date | 2026-08-19 |
 | Deciders | janus (Driver) |
 | REQs served | #8 (doctrine service distribution), #31 (container this builds on), the dev-team pilot's own feedback loop |

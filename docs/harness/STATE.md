@@ -7,11 +7,11 @@ current — a stale STATE.md is worse than none.
 | --- | --- |
 | Work item | #8 — central doctrine service on ECS (browser + MCP) |
 | Risk tier | T2 |
-| Current stage | 05-review next — #8 (M0+M1+M2) built end to end; #11 needs G5+G6 |
+| Current stage | 05-review — #11's G5 review-record.md drafted, adversarial self-review complete, pending Driver verdict |
 | Last gate passed | G4 for #11, 2026-08-18 (in-session Driver approval; DECISIONS.log) |
-| Next gate | G5 for #11 (adversarial self-review, same ADR-011 override shape as #10's — would be use #3 of 3, the tripwire itself) |
-| Active milestone | M2 complete (build + G4). #8 as a whole: built, not yet fully reviewed/secured (#11 G5/G6 outstanding), not deployed (G7 not applicable — no real ECS target yet) |
-| Current task | None — holding for direction: G5 for #11, or pause #8 here |
+| Next gate | G5 for #11 — review-record.md at docs/harness/changes/GH-11/ ready for Driver's verdict. **This would be use #3 of 3 — ADR-011's trigger #4 tripwire fires the moment it's logged as passed.** No further self-reviewed G5 in this repo after that, until a real second reviewer is found |
+| Active milestone | M2 build + G4 complete. G5 awaiting Driver verdict (last self-review use). #8 as a whole: built, G6 for #11 and real deploy (G7) still ahead |
+| Current task | None — holding for Driver's G5 verdict on #11 |
 | Blockers | none for #8/#9/#10's pipeline. #30 (open) BLOCKS further changes to templates/CHANGE.md's delivery-medium/T3-collapse logic (GH-27/28, ADR-010) or CLAUDE.md §9's hedge rule (GH-29) until a blind-authored eval scenario proves they actually work — see handoff |
 | UNVERIFIED items | none |
 

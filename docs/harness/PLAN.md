@@ -127,7 +127,7 @@ All 5 acceptance criteria (`#10`'s ticket body) verified live, not just by unit 
 $ curl ... (no Authorization header) .../mcp -d '{"jsonrpc":"2.0","id":4,"method":"tools/list"}'
 HTTP:401                                    # fail-closed at the transport layer itself
 
-$ curl ... -H "Authorization: Bearer demo-token-123" .../mcp -d '{"...":"initialize",...}'
+$ curl ... -H "Authorization: Bearer <any-nonempty-token>" .../mcp -d '{"...":"initialize",...}'
 HTTP/1.1 200 OK
 data: {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-06-18",
   "serverInfo":{"name":"harness-doctrine","version":""}, ...}}

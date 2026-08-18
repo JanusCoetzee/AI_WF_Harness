@@ -52,7 +52,7 @@ silently.
 | Manifest schema (ADR-002 + ADR-008 `skills[]`) | `app/doctrine.py::build_manifest`, `tests/test_doctrine_api.py::test_10_1_manifest_matches_schema` + `test_10_5_skills_report_exactly_the_config_pin` ✓ |
 | No `latest`/versionless route, 404 unknown version | `app/server.py` route table (only `<version>` segments defined), `test_10_3_*` ✓ |
 | 500 (never content) on tamper | `app/doctrine.py::read_file_verified` (raises `IntegrityError`), `app/server.py::api_doctrine_file` (catches, `abort(500)`), `test_10_2_*` ✓ |
-| Fail-closed authz, unlabeled/unrecognized denied | `app/doctrine.py::is_allowed`, `test_10_4_*` ✓ |
+| Fail-closed authz, unlabeled/unrecognized denied | `app/doctrine.py::is_allowed`, `test_10_4_*` ✓ <!-- gitleaks:allow: generic-api-key false positive on this prose, confirmed not a secret 2026-08-18 --> |
 | `scripts/doctrine-manifest.py` runnable in CI | `.github/workflows/*.yml` already runs `scripts/verify.sh` → `pytest tests/`, which now includes `test_doctrine_manifest_script_runs_clean` / `..._nonzero_exit_on_unknown_version` exercising the actual CLI subprocess, not just the importable module ✓ |
 | `HARNESS_ROOT` failure mode is fail-closed, not a crash | `app/doctrine.py::ManifestBuildError`, `app/server.py::_build_manifest_or_404`, `test_g5_no_git_root_*` ✓ (finding #1 above) |
 

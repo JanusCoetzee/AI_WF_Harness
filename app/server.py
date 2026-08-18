@@ -241,6 +241,11 @@ def _build_manifest_or_404(version: str) -> dict:
         return doctrine.build_manifest(ROOT, version, catalog())
     except KeyError:
         abort(404, description=f"unknown doctrine version: {version}")
+    except doctrine.ManifestBuildError:
+        # G5 finding: HARNESS_ROOT with no `.git` (or no `git` binary) must
+        # fail closed cleanly, not crash with an unhandled 500 leaking a
+        # subprocess traceback into server logs on every request.
+        abort(500, description="doctrine manifest could not be built")
 
 
 @app.route("/api/doctrine/<version>/manifest")

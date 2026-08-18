@@ -52,15 +52,29 @@ class IntegrityError(Exception):
     integrity contract)."""
 
 
+class ManifestBuildError(Exception):
+    """The manifest couldn't be built at all — e.g. HARNESS_ROOT has no
+    `.git` (found by G5 adversarial review: a content root delivered as a
+    stripped bundle rather than a live checkout, or a minimal image with no
+    `git` binary, both plausible under ADR-008's published-tag model).
+    Callers must turn this into a clean 500, not let the underlying
+    CalledProcessError propagate as an unhandled exception."""
+
+
 def sha256_of(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _git_commit(root: Path) -> str:
-    out = subprocess.run(
-        ["git", "-C", str(root), "rev-parse", "HEAD"],
-        capture_output=True, text=True, check=True,
-    )
+    try:
+        out = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            capture_output=True, text=True, check=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+        raise ManifestBuildError(
+            f"could not resolve git_commit for {root}: {exc}"
+        ) from exc
     return out.stdout.strip()
 
 

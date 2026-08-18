@@ -3,6 +3,7 @@ body). Manual schema assertions (not the `jsonschema` package) deliberately
 — ADR-002's manifest schema is small and stable; adding a new pinned
 dependency + pip-audit surface for one test file isn't worth it for a
 schema this size."""
+import json
 import re
 import subprocess
 import sys
@@ -70,6 +71,41 @@ def test_10_5_skills_report_exactly_the_config_pin(client):
     # into skills[], but independently verifiable.
     skill_names = {s["name"] for s in pin["skills"]}
     assert skill_names <= {p.parent.name for p in (ROOT / ".claude" / "skills").glob("*/SKILL.md")}
+
+
+# --- G5 finding: HARNESS_ROOT with no `.git` must fail closed, not crash ---
+
+def test_g5_no_git_root_fails_closed_not_unhandled(tmp_path):
+    """A content root with no .git (stripped bundle, or git missing) must
+    raise doctrine's own typed error, not let CalledProcessError propagate
+    as an unhandled exception (found by adversarial G5 review, 2026-08-18)."""
+    (tmp_path / "harness.config.yaml").write_text(
+        "doctrine:\n  version: harness-v0.2\n  core_version: harness-v0.2\n  skills: []\n"
+    )
+    (tmp_path / "README.md").write_text("no git here\n")
+    catalog = [{"key": "overview", "items": [
+        {"path": "README.md", "title": "README", "slug": "readme", "desc": ""}
+    ]}]
+    with pytest.raises(doctrine.ManifestBuildError):
+        doctrine.build_manifest(tmp_path, "harness-v0.2", catalog)
+
+
+def test_g5_no_git_root_route_returns_clean_500(client, tmp_path, monkeypatch):
+    (tmp_path / "harness.config.yaml").write_text(
+        "doctrine:\n  version: harness-v0.2\n  core_version: harness-v0.2\n  skills: []\n"
+    )
+    (tmp_path / "README.md").write_text("no git here\n")
+
+    import server
+    monkeypatch.setattr(server, "ROOT", tmp_path)
+    monkeypatch.setattr(server, "catalog", lambda: [{"key": "overview", "items": [
+        {"path": "README.md", "title": "README", "slug": "readme", "desc": ""}
+    ]}])
+
+    r = client.get(f"/api/doctrine/{VERSION}/manifest", headers=_auth_headers())
+    assert r.status_code == 500
+    assert b"Traceback" not in r.data
+    assert b"subprocess" not in r.data
 
 
 # --- AC 2: tamper -> 500, never the altered content -------------------------
@@ -177,3 +213,26 @@ def test_10_4_manifest_route_filters_nothing_for_authenticated_actor(client):
     # one sees everything.
     assert unauthed["files"] == []
     assert len(authed["files"]) > 0
+
+
+# --- T1.4: scripts/doctrine-manifest.py actually runs as a CLI, not just as
+# an importable module (G5 review: exercise the artifact CI would run) -----
+
+def test_doctrine_manifest_script_runs_clean():
+    r = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "doctrine-manifest.py")],
+        capture_output=True, text=True, cwd=ROOT,
+    )
+    assert r.returncode == 0, r.stderr
+    m = json.loads(r.stdout)
+    assert m["version"] == VERSION
+    assert m["files"]
+
+
+def test_doctrine_manifest_script_nonzero_exit_on_unknown_version():
+    r = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "doctrine-manifest.py"), "harness-v99.9"],
+        capture_output=True, text=True, cwd=ROOT,
+    )
+    assert r.returncode != 0
+    assert "unknown doctrine version" in r.stderr

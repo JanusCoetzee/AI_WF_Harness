@@ -25,7 +25,7 @@ def main() -> int:
     version = sys.argv[1] if len(sys.argv) > 1 else pin["version"]
     try:
         manifest = doctrine.build_manifest(ROOT, version, catalog())
-    except KeyError as exc:
+    except (KeyError, doctrine.ManifestBuildError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
     print(json.dumps(manifest, indent=2))

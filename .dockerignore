@@ -11,5 +11,7 @@ stages
 templates
 tests
 scripts
+!scripts/container-entrypoint.sh
+!scripts/container-healthcheck.py
 .claude
 .github

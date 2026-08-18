@@ -87,13 +87,39 @@ All 5 acceptance criteria (`#10`'s ticket body) verified live, not just by unit 
 
 ### M2 — MCP tools (#11)
 
-- **Tasks:** not yet decomposed to task level — `#11` isn't ticketed with
-  `#10`'s level of detail yet (blocked on `#10` landing first; ADR-002's
-  MCP tool table, `harness_get_template` etc., is the design starting
-  point). Decompose properly when `#10` is G4-complete, don't speculate now.
-- **Test strategy:** TBD at `#11`'s own ticketing.
-- **Demo command:** TBD.
-- **Demo record:** N/A — not started.
+- **Tasks:** per `#11`'s own ticket body (redefined 2026-08-18 — transport
+  hedge resolved to HTTP-only, `skills[]` confirmed out of scope, same
+  style as `#10`'s 2026-08-12 pass):
+  - [ ] T2.1 — MCP server process (`app/mcp_server.py`): `MCPServer`,
+    `streamable-http` transport only, imports `app/doctrine.py` directly
+    (no HTTP hop to `#10`'s own routes — same in-process content-store +
+    `is_allowed()` calls)
+  - [ ] T2.2 — Stub `TokenVerifier` mirroring `#10`'s `X-Harness-Actor`
+    header stub (bearer-token presence = authenticated, no real OIDC);
+    feeds `is_allowed(identity, item)` unchanged from `#10`
+  - [ ] T2.3 — Four tools per ADR-002's table: `harness_get_template`,
+    `harness_get_gate`, `harness_get_standard`, `harness_search_doctrine`
+    (ranked title/heading/excerpt match over `files[]` only); every
+    response carries `{version, path, sha256}` provenance; unknown version
+    → tool error, never silent fallback
+  - [ ] T2.4 — README sample client config
+    (`claude mcp add --transport http harness-doctrine <url>`)
+- **Test strategy:** `tests/test_mcp_doctrine.py` — schema-validated tool
+  responses, provenance on every response, exactly 4 tools registered (no
+  stdio, no write tools), tamper → tool error not content, denial → tool
+  error not content (reuses `#10`'s `is_allowed()` test patterns). Per
+  `#11`'s Verify section: coverage ≥80% on changed lines, ruff clean.
+- **Demo command:**
+  ```bash
+  .venv/bin/python -m pytest -q tests/test_mcp_doctrine.py
+  # then live: claude mcp add --transport http harness-doctrine <endpoint>/mcp
+  # ask a session: "fetch the CHANGE template at harness-v0.2 via harness_get_template"
+  ```
+- **Demo record** (filled at completion — paste observed output):
+
+```text
+(observed output here — this is G4 evidence)
+```
 
 ## Out-of-plan proposals
 

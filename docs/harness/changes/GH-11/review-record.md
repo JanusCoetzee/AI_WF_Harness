@@ -60,7 +60,13 @@ approves nothing on its own (CLAUDE.md §7; ADR-011 waives G5's
 
 | Reviewer | Verdict | Date |
 | --- | --- | --- |
-| janus (Driver — self-review under ADR-011 override, NOT an independent reviewer — **use #3 of 3, tripwire fires on pass**) | **pending Driver verdict** | — |
+| janus (Driver — self-review under ADR-011 override, NOT an independent reviewer — **use #3 of 3, tripwire fires on pass**) | **Approve** ([issue #11 comment](https://github.com/JanusCoetzee/AI_WF_Harness/issues/11#issuecomment-5323534667), via ADR-012) | 2026-08-18 |
+
+**G5 PASSED.** Per ADR-011's own terms, ADR-011's trigger #4 has now fired:
+this was the third G5 self-reviewed under the bootstrap override with no
+external review ever having occurred. The override ends here — no further
+T2/T3 G5 in this repo may use self-review after this one, until a second
+reviewer is actually found (trigger #1) or ADR-011 is explicitly superseded.
 
 Diff size: `app/mcp_server.py` (new), `tests/test_mcp_doctrine.py` (new),
 `app/requirements.txt`, `README.md` — within the ~500-line ceiling.

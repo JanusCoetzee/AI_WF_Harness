@@ -94,3 +94,16 @@ passed under this override must say so explicitly in its review record and
 claim as "independently reviewed," and nothing should ever conflate them,
 including future sessions reading `STATE.md` at a glance. Tripwire: trigger
 #4 above (three uses) is a hard count — track it, don't let it pass silently.
+
+## Trigger fired — 2026-08-18
+
+**Trigger #4 has fired.** Three G5s have now been passed under this
+override with no external review ever occurring: `#9` (use #1), `#10`
+(use #2), `#11` (use #3 — Driver verdict "Approve",
+[issue #11 comment](https://github.com/JanusCoetzee/AI_WF_Harness/issues/11#issuecomment-5323534667),
+via [ADR-012](ADR-012-github-issue-approval-channel.md)). Per this ADR's own
+terms, **the bootstrap override ends here.** No further T2/T3 work item in
+this repo may self-review its G5 under this ADR. The next T2/T3 gate that
+needs G5 either finds a real second reviewer (trigger #1, which supersedes
+this ADR rather than extending it) or stalls at G5 honestly, rather than
+spending a fourth use this ADR never authorized.

@@ -10,7 +10,7 @@ current — a stale STATE.md is worse than none.
 | Current stage | **#31 RATIFIED (GC) and complete** — built, all 7 ACs verified live, GC approved in-session 2026-08-18. No further gate owed at this size (small fast-path item, build evidence doubled as G4-equivalent proof, same as GH-17..21) |
 | Last gate passed | GC for #31, 2026-08-18 (Driver "Approve" rendered in-session — checked issue #31 first, confirmed no comment existed yet, not inferred; noted on the issue for the record; DECISIONS.log) |
 | Next gate | None owed on #31 — done. Parent #8 stays paused (Driver's Option-1 decision, unchanged); if resumed directly (shared/production), G7 starts at real SSO/OIDC |
-| Active milestone | None active. #31's work is done (GitHub issue itself left open, not closed — that's a separate human action); #8 remains the deliberately-paused parent |
+| Active milestone | None active. #31 fully closed out (GitHub issue #31 CLOSED, work merged and pushed to origin/main); #8 remains the deliberately-paused parent |
 | Current task | None — holding for next direction |
 | Blockers | none blocking #31. **ADR-011's self-review bootstrap override is CLOSED** (trigger #4 fired on #11's G5 — 3rd use with no external review) — any future T2/T3 G5 in this repo needs a real second reviewer, until one is found or ADR-011 is superseded. #30 (open) BLOCKS further changes to templates/CHANGE.md's delivery-medium/T3-collapse logic (GH-27/28, ADR-010) or CLAUDE.md §9's hedge rule (GH-29) until a blind-authored eval scenario proves they actually work — see handoff |
 | UNVERIFIED items | none |

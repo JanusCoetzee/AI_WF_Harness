@@ -133,4 +133,6 @@ non-blocking housekeeping/already-investigated items, not policy
 exceptions requiring `expiry_date`/`owner` under `harness.config.yaml`'s
 waiver rules.
 
-**Driver verdict:** requested via [issue #11](https://github.com/JanusCoetzee/AI_WF_Harness/issues/11) comment, per ADR-012 — pending reply.
+**Driver verdict:** **Approve** ([issue #11 comment](https://github.com/JanusCoetzee/AI_WF_Harness/issues/11#issuecomment-5323596253), via ADR-012), 2026-08-18T04:26:40Z.
+
+**G6 PASSED.**

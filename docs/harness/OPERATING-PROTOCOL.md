@@ -45,6 +45,13 @@ positive: a `# data-scan: allow` comment on the offending line.
 - `DECISIONS.log` line format: `2026-07-16 | G3 passed | <who> | <link>`.
 - Ticket standard: `templates/ISSUE.md` Definition of Ready.
 - ADR template: `templates/ADR.md`.
+- **Verdict channel (ADR-012):** a gate passage, ADR ratification, or
+  override/tripwire decision that isn't being rendered live in an active
+  session is requested as a GitHub issue (clear ask, evidence, AI's
+  recommendation if any) — the Driver's verdict is an issue comment
+  (`Approve`/`Decline`), read before anything is logged as passed. Default
+  to filing the issue when unsure; it beats burying another approval in
+  chat scrollback.
 
 ## Slash commands
 

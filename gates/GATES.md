@@ -6,6 +6,10 @@ verifies (a) mechanically. Which gates apply depends on risk tier (`harness.conf
 
 **Skipping a gate is an incident, not a shortcut.** Overrides are allowed — logged, with a reason.
 
+**Approver verdicts not rendered live in an active session go through a GitHub
+issue, answered as a comment** (`Approve`/`Decline`) — see ADR-012. Never
+logged as passed on an inference from chat or silence.
+
 Two entry paths share the back half of the pipeline:
 
 - **Greenfield / project-sized:** G0 → G1 → G2 → G3 → build → G4 → G5 → G6 → G7.

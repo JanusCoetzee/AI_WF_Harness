@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Drafted — awaiting Driver GC approval (CLAUDE.md §7: gate passage is human-only) |
+| Status | Ratified (GC) |
 | Driver | janus |
 | Source (ticket / requester — named) | GitHub issue #35 — first self-application of `ADR-014` |
 | Date | 2026-08-19 |
@@ -100,4 +100,4 @@ Revert the commit. No migration, no consumer that depends on the new sections ex
 
 ## GC sign-off
 
-T3: Driver approval still needed (session constraint: no gate self-approval, no push/close without checking with the Driver first). On approval, log: `2026-08-19 | GC passed | janus | GH-35`
+T3: Driver. **Approved in-session, 2026-08-19** (Driver: "yes", approving #32/#33/#35 together — ADR-012's synchronous carve-out). `DECISIONS.log`: `2026-08-19 | GC passed | janus | GH-35`

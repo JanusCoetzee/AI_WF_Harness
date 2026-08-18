@@ -171,3 +171,22 @@ deployment blocker named in `#10`'s delta, unchanged by `#11`. `ISSUER_URL`/
 `RESOURCE_SERVER_URL` default to `localhost` and are overridable via env
 var for real deployment — configuring them for real is bundled into the
 same G7 real-SSO work, not a separate gap.
+
+## New boundary — GHCR registry → dev pull (GH-32 / ADR-013, 2026-08-19)
+
+`ADR-013` decided (and this row was named as its own required follow-on,
+not optional) to publish version-tagged, content-baked images to GHCR.
+Structurally the same shape ADR-008 already modeled for the shared
+skill-artifact registry (`Shared registry → BU build pipeline` row,
+above) — same mitigations reused deliberately, not reinvented:
+
+| Boundary | S | T | R | I | D | E | Mitigations | REQ/ADR |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| GHCR registry → dev `docker pull` | only CI (via the workflow's own `GITHUB_TOKEN`, no long-lived keys — same `CI → ECR → ECS` pattern) can publish a tag | published tags are immutable, `:latest` is never published (ADR-013's own extension of ADR-002's "no latest" invariant to images) | GHCR's own push/pull audit log (GitHub-hosted, same account as this repo) | content baked into the image is the same Internal-max doctrine already served by `#10`/`#11` — no new classification, no new data | a bad tag can't be "fixed in place" (immutable) — a corrected tag is a new publish, same as any other release | the registry adds a pull surface, not a write path back into the running service — pulling an image doesn't grant any tool/route access this repo doesn't already gate | served content is still sha256-manifest-verified at request time regardless of which build mode produced the image (`app/doctrine.py::read_file_verified`, unchanged) — **a tampered image still can't serve tampered content past the existing fail-closed integrity check** | `ADR-013`, reusing `ADR-008`'s registry mitigations |
+
+**Not a new AI-specific threat** (no MCP/LLM-context change — GH-32 only
+changes how the same content gets into the container, not what's served
+or how). **Repo is public** (`gh repo view --json visibility`) — GHCR
+publish requires no new secret; the workflow's default `GITHUB_TOKEN`
+with `packages: write` is sufficient, itself a smaller credential surface
+than provisioning a long-lived PAT would have been.

@@ -1,17 +1,19 @@
-.git
 .venv
 .ruff_cache
 .coverage
 __pycache__
 **/__pycache__
-docs
-evals
-gates
-stages
-templates
 tests
 scripts
 !scripts/container-entrypoint.sh
 !scripts/container-healthcheck.py
 .claude
+!.claude/skills
 .github
+
+# GH-32/ADR-013: docs/, evals/, gates/, stages/, templates/, and .git are
+# NOT excluded here (unlike before this ticket) -- baked mode's
+# Dockerfile stage COPYs them in as this repo's own doctrine content.
+# Mount mode's stage never COPYs them regardless of whether they're in
+# the build context, so its resulting image is unaffected; the only cost
+# is a marginally larger context upload on every build (RECON.md, GH-32).

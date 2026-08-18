@@ -1,0 +1,58 @@
+name: publish-image
+
+# GH-32 / ADR-013: on every git tag push, publish a version-tagged,
+# content-baked image to GHCR. Never publishes :latest -- ADR-002's
+# "no latest" invariant extended from doctrine versions to images
+# (ADR-013's own Decision section). Uses the workflow's own built-in
+# GITHUB_TOKEN (packages: write) -- this repo is public, no new secret
+# needs provisioning (docs/harness/changes/GH-32/RECON.md).
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: build (baked) + publish to GHCR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Derive doctrine_version + skills[] label from harness.config.yaml
+        id: doctrine
+        run: |
+          pip install --quiet pyyaml
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import yaml
+          cfg = yaml.safe_load(open("harness.config.yaml"))["doctrine"]
+          print(f"version={cfg['version']}")
+          skills = ",".join(f"{s['name']}@{s['version']}" for s in cfg.get("skills", []))
+          print(f"skills={skills}")
+          PY
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build (CONTENT_MODE=baked) and push exactly this tag -- never :latest
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/harness-doctrine:${{ github.ref_name }}
+          build-args: |
+            CONTENT_MODE=baked
+            IMAGE_VERSION=${{ github.ref_name }}
+            IMAGE_REVISION=${{ github.sha }}
+            DOCTRINE_VERSION=${{ steps.doctrine.outputs.version }}
+            SKILLS_LABEL=${{ steps.doctrine.outputs.skills }}

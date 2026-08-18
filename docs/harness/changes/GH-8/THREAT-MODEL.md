@@ -135,3 +135,39 @@ deploy, G7 of build slice") is not yet satisfied and must not be treated
 as satisfied by `#10`'s stub — this is a **G7 blocker for actual
 deployment**, not a `#10` gap, but worth restating here so it doesn't get
 lost between now and whenever `#7` (deploy) is worked.
+
+## Delta review — #11 (2026-08-18): MCP tools built, G5 passed, G6
+
+`#11` is the MCP half of the `IDE → ALB → MCP` boundary the STRIDE table
+already described at G2 — the first code exercising it. Closes the two
+rows `#10`'s delta explicitly left N/A pending `#11`.
+
+| Threat | Verified at G6 for `#11`? |
+| --- | --- |
+| Prompt injection via retrieved docs (flagship threat) | **Verified**, same mechanism as `#10` — `#11` calls `app/doctrine.py::read_file_verified` directly (no parallel content path), so fail-closed integrity and explicit-version-only both carry over unchanged, not re-implemented. Confirmed live at `#11`'s own G5 (`isError` on unknown version, no silent fallback) |
+| Sensitive data leakage into prompts/logs | **Verified.** `harness_search_doctrine` is the query/search route `#10`'s delta named as `#11`'s to cover — `_search()` filters denied items out of the result set entirely (`continue`, not an error), tested (`tests/test_mcp_doctrine.py::test_11_4_search_silently_omits_denied_items_not_erroring`, `test_11_wrapper_search_doctrine_returns_empty_when_unauthenticated`). No request-body persistence added |
+| Unsafe output handling | Unchanged — `#11` returns the same `{path, version, sha256, content}` shape as `#10`'s HTTP routes; still documentation data, not instructions, same client-side demarcation |
+| Excessive agency | **Verified.** All four registered tools are read-only by construction — `tests/test_mcp_doctrine.py::test_11_3_exactly_four_tools_registered` and `test_11_3_no_write_tool_exists` pin this mechanically, not just by code review. Adding a fifth tool or any write tool still supersedes ADR-002, unchanged |
+| Model/prompt drift degrading a control | Unchanged from `#10` — `_resolve_manifest_or_error` calls the same explicit-version-only `build_manifest`, no versionless path exists in `#11` either |
+| Denial of wallet | N/A — unchanged, no LLM calls in `#11`'s code path either |
+
+**New trust dependency, not previously named:** `#11` is the first code in
+this repo where a third-party library (`mcp==2.0.0`'s OAuth resource-server
+middleware) does real security enforcement this repo doesn't own or test
+directly — the 401-before-any-tool-code-runs behavior confirmed live at G5
+depends partly on the SDK's own correctness, not only `app/mcp_server.py`'s
+(`#11`'s review record names this as its "area of least confidence,"
+repeated here since threat-model coverage, not just a review note, is
+where it belongs). `pip-audit` clean on `mcp==2.0.0` + transitive deps at
+this G6 (no known CVEs today) — this is a **supply-chain trust dependency
+to re-check on every future dependency-audit cycle**, not a one-time
+finding, the same way `CI → ECR → ECS`'s row already treats the container
+supply chain generally.
+
+**Assumption #1 still open, still not `#11`'s to close:** `StubTokenVerifier`
+mirrors `#10`'s `X-Harness-Actor` stub exactly (any non-empty bearer token
+= authenticated, no real verification of who's asserting it) — same G7
+deployment blocker named in `#10`'s delta, unchanged by `#11`. `ISSUER_URL`/
+`RESOURCE_SERVER_URL` default to `localhost` and are overridable via env
+var for real deployment — configuring them for real is bundled into the
+same G7 real-SSO work, not a separate gap.

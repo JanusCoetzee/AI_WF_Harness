@@ -4,7 +4,7 @@
 | --- | --- |
 | Tier | T2 (boundary table only) |
 | Reviewed by | janus (Driver) — G2 pending |
-| Date / Delta-reviewed at G6 | 2026-07-19 / pending |
+| Date / Delta-reviewed at G6 | 2026-07-19 / #10 delta reviewed 2026-08-18 (below); #9's container slice still has no delta review of its own — named, not backfilled here |
 
 ## System sketch
 
@@ -98,3 +98,40 @@ Full STRIDE table update (new registry boundary added):
 | Boundary | S | T | R | I | D | E | Mitigations | REQ/ADR |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Shared registry → BU build pipeline | publish role scoped per namespace (core vs. skill) | tag tampering caught by same sha256-manifest integrity check as ADR-002 | publish events logged (extends CloudTrail coverage from CI→ECR) | skill content is in-scope for the Internal-max ceiling identically to doctrine — **not yet enforced for BU-authored skills specifically (risk #7)** | registry outage blocks new pulls only; running instances unaffected | only each namespace's designated publisher (core maintainers; the owning BU for their own skills) can publish to it | signed-tag verification extended to skill namespace; risk #7 open | ADR-002, ADR-008 |
+
+## Delta review — #10 (2026-08-18): doctrine API + authz interface built, G6
+
+`#10` implements the read-side of ADR-002's contracts against real code for
+the first time (`#9` proved the container could serve content at all;
+`#10` is the first slice where the mitigations below are actually load-
+bearing, not just designed). Updating the AI-specific threats table's
+"Verified at G6?" column for the rows `#10` actually delivers — the
+original table is left as the record of what was designed at G2; this
+delta is what got built and tested.
+
+| Threat | Verified at G6 for `#10`? |
+| --- | --- |
+| Prompt injection via retrieved docs (flagship threat) | **Verified.** Fail-closed content integrity shipped and tested: `app/doctrine.py::read_file_verified` raises on a sha256 mismatch, `app/server.py` turns that into a 500 that never serves the mismatched bytes (`tests/test_doctrine_api.py::test_10_2_*`). No `latest` endpoint exists — every read is against an explicit, auditable version (`test_10_3_*`) |
+| Sensitive data leakage into prompts/logs | N/A for `#10`'s actual surface — no query/search route exists yet (`harness_search_doctrine` is `#11`'s, out of scope here). Nothing `#10` added persists request bodies |
+| Unsafe output handling | Unchanged — still a client-side demarcation concern, `#10` serves data, not instructions, same as before |
+| Excessive agency | N/A for `#10` — no MCP tools exist yet (`#11`, still pending). `#10`'s two HTTP routes are both `GET`, no write path |
+| Model/prompt drift degrading a control | **Verified.** Explicit-version-only is enforced in code, not just policy (`app/server.py` route table has no versionless/`latest` route at all — structurally absent, not merely rejected) |
+| Denial of wallet | N/A — unchanged, no LLM calls in `#10`'s code path |
+
+**RBAC-at-retrieval (STRIDE table's IDE→ALB→MCP row, ADR-002 amendment):**
+`#10` is the first code that actually implements "the service filters
+fail-closed" rather than describing it — `app/doctrine.py::is_allowed()`
+denies on missing/unrecognized classification regardless of identity, and
+the manifest route filters its own listing (not just gated fetches) by the
+same function. Verified live during `#10`'s G5, not just by unit test
+(unauthenticated request → empty `files[]`).
+
+**Assumption #1 still open, flagged again rather than silently carried:**
+real SSO/OIDC is explicitly out of scope for `#10` (its own ticket body) —
+identity is a documented header stub (`X-Harness-Actor`), authenticated =
+presence of any non-empty value, no verification of who's asserting it.
+THREAT-MODEL.md's own assumption #1 ("Org SSO exists... before first
+deploy, G7 of build slice") is not yet satisfied and must not be treated
+as satisfied by `#10`'s stub — this is a **G7 blocker for actual
+deployment**, not a `#10` gap, but worth restating here so it doesn't get
+lost between now and whenever `#7` (deploy) is worked.

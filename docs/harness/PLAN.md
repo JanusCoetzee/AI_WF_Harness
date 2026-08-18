@@ -41,7 +41,7 @@ requirements clean (STD-004).
   top of it is a deliberate call (same one implicitly already made when M0
   shipped without a ratified G3) — not a claim that M0 is fully closed out.
 
-### M1 — Doctrine API + authz interface (#10)
+### M1 — Doctrine API + authz interface (#10) — COMPLETE, G4+G5+G6 passed 2026-08-18
 
 - **Tasks:** per `#10`'s own ticket body (already redefined 2026-08-12 —
   `skills` array confirmed in scope per ADR-008, GH-21's classification

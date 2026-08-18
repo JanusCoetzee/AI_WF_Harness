@@ -1,0 +1,53 @@
+verify loop @ b0fe5a0 — 2026-08-18T22:22:47Z
+  > typecheck  python3 -m py_compile app/server.py
+  ✓ typecheck  ok (0s)
+  > lint       .venv/bin/ruff check app tests && bash -n scripts/verify.sh scripts/gate-check.sh scripts/evidence-bundle.sh scripts/hooks/*.sh && scripts/audit-decisions.sh && scripts/data-scan.sh
+All checks passed!
+audit-decisions: cross-checking claims against docs/harness/DECISIONS.log
+  ✓ STATE.md claims last gate passed = GC
+  ✓ change GH-12 claims Ratified (GC)
+  ✓ change GH-13 claims Ratified (GC)
+  ✓ change GH-14 claims Ratified (GC)
+  ✓ change GH-15 claims Ratified (GC)
+  ✓ change GH-17 claims Ratified (GC)
+  ✓ change GH-18 claims Ratified (GC)
+  ✓ change GH-19 claims Ratified (GC)
+  ✓ change GH-20 claims Ratified (GC)
+  ✓ change GH-21 claims Ratified (GC)
+  ✓ change GH-25 claims Ratified (GC)
+  ✓ change GH-26 claims Ratified (GC)
+  ✓ change GH-27 claims Ratified (GC)
+  ✓ change GH-28 claims Ratified (GC)
+  ✓ change GH-29 claims Ratified (GC)
+  ✓ change GH-31 claims Ratified (GC)
+  ✓ change GH-6 claims Ratified (GC)
+  ✓ RELEASE-CHECKLIST.md exists (release claimed)
+
+audit-decisions: checking docs/harness/DECISIONS.log chronology
+  ✓ docs/harness/DECISIONS.log dates are non-decreasing
+
+audit-decisions: checking closed-issue claims against GitHub
+  ✓ #31 confirmed CLOSED on GitHub
+
+audit-decisions: all claims logged.
+data-scan: ✓ clean
+  ✓ lint       ok (5s)
+  > test       .venv/bin/python -m pytest -q tests/ --cov=app --cov-fail-under=80
+........................................................................ [ 98%]
+.                                                                        [100%]
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                Stmts   Miss  Cover
+---------------------------------------
+app/doctrine.py        61      4    93%
+app/mcp_server.py      68      7    90%
+app/server.py         144      5    97%
+---------------------------------------
+TOTAL                 273     16    94%
+Required test coverage of 80% reached. Total coverage: 94.14%
+73 passed in 2.43s
+  ✓ test       ok (3s)
+  ~ eval       skipped (not configured)
+  ~ build      skipped (not configured)
+verify: ALL GREEN

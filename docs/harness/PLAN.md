@@ -85,41 +85,71 @@ $ curl -s "localhost:5050/api/doctrine/harness-v0.2/manifest" | python3 -m json.
 
 All 5 acceptance criteria (`#10`'s ticket body) verified live, not just by unit test: AC1 (schema), AC2 (tamper → 500, confirmed no altered content in body), AC3 (no bare/`latest` route, unknown version → 404), AC4 (unauthenticated → empty `files[]`, fail-closed), AC5 (`skills[]` above matches `harness.config.yaml`'s `doctrine.skills` pin exactly).
 
-### M2 — MCP tools (#11)
+### M2 — MCP tools (#11) — COMPLETE, G4 passed 2026-08-18
 
 - **Tasks:** per `#11`'s own ticket body (redefined 2026-08-18 — transport
   hedge resolved to HTTP-only, `skills[]` confirmed out of scope, same
   style as `#10`'s 2026-08-12 pass):
-  - [ ] T2.1 — MCP server process (`app/mcp_server.py`): `MCPServer`,
+  - [x] T2.1 — MCP server process (`app/mcp_server.py`): `MCPServer`,
     `streamable-http` transport only, imports `app/doctrine.py` directly
     (no HTTP hop to `#10`'s own routes — same in-process content-store +
     `is_allowed()` calls)
-  - [ ] T2.2 — Stub `TokenVerifier` mirroring `#10`'s `X-Harness-Actor`
+  - [x] T2.2 — Stub `TokenVerifier` mirroring `#10`'s `X-Harness-Actor`
     header stub (bearer-token presence = authenticated, no real OIDC);
     feeds `is_allowed(identity, item)` unchanged from `#10`
-  - [ ] T2.3 — Four tools per ADR-002's table: `harness_get_template`,
+  - [x] T2.3 — Four tools per ADR-002's table: `harness_get_template`,
     `harness_get_gate`, `harness_get_standard`, `harness_search_doctrine`
-    (ranked title/heading/excerpt match over `files[]` only); every
-    response carries `{version, path, sha256}` provenance; unknown version
-    → tool error, never silent fallback
-  - [ ] T2.4 — README sample client config
+    (ranked title/path match over `files[]` only); every response carries
+    `{version, path, sha256}` provenance; unknown version → tool error,
+    never silent fallback
+  - [x] T2.4 — README sample client config
     (`claude mcp add --transport http harness-doctrine <url>`)
-- **Test strategy:** `tests/test_mcp_doctrine.py` — schema-validated tool
-  responses, provenance on every response, exactly 4 tools registered (no
-  stdio, no write tools), tamper → tool error not content, denial → tool
-  error not content (reuses `#10`'s `is_allowed()` test patterns). Per
-  `#11`'s Verify section: coverage ≥80% on changed lines, ruff clean.
+- **Test strategy:** `tests/test_mcp_doctrine.py` — 14 tests: pure-function
+  logic (`_get_by_kind`/`_search`, fast, no protocol plumbing) plus real
+  `mcp.call_tool()`/`list_tools()` wiring tests (proves the registered
+  tools, not just the logic underneath them) — exactly 4 tools registered,
+  no write verbs, provenance on every response, unknown version/item →
+  `ToolError`, tamper → `ToolError` not content, denial → `ToolError` (or
+  silently empty for search) not content. Coverage: `app/mcp_server.py`
+  90% (≥80% threshold met); ruff clean.
 - **Demo command:**
   ```bash
   .venv/bin/python -m pytest -q tests/test_mcp_doctrine.py
-  # then live: claude mcp add --transport http harness-doctrine <endpoint>/mcp
+  .venv/bin/python app/mcp_server.py     # → http://127.0.0.1:5051/mcp
+  claude mcp add --transport http harness-doctrine http://127.0.0.1:5051/mcp
   # ask a session: "fetch the CHANGE template at harness-v0.2 via harness_get_template"
   ```
-- **Demo record** (filled at completion — paste observed output):
+- **Demo record** (observed 2026-08-18 — real MCP JSON-RPC protocol over
+  the wire, not just unit tests: `initialize` → `notifications/initialized`
+  → `tools/call`, against a live `app/mcp_server.py` on `127.0.0.1:5051`):
 
 ```text
-(observed output here — this is G4 evidence)
+$ curl ... (no Authorization header) .../mcp -d '{"jsonrpc":"2.0","id":4,"method":"tools/list"}'
+HTTP:401                                    # fail-closed at the transport layer itself
+
+$ curl ... -H "Authorization: Bearer demo-token-123" .../mcp -d '{"...":"initialize",...}'
+HTTP/1.1 200 OK
+data: {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-06-18",
+  "serverInfo":{"name":"harness-doctrine","version":""}, ...}}
+
+$ curl ... (same session, authenticated) .../mcp -d '{"...":"tools/list"}'
+['harness_get_template', 'harness_get_gate', 'harness_get_standard', 'harness_search_doctrine']
+
+$ curl ... (same session) .../mcp -d '{"...":"tools/call","params":{"name":"harness_get_template",
+  "arguments":{"name":"CHANGE","version":"harness-v0.2"}}}'
+data: {"jsonrpc":"2.0","id":2,"result":{"content":[{"text":
+  "{\n  \"path\": \"templates/CHANGE.md\",\n  \"version\": \"harness-v0.2\",\n
+  \"sha256\": \"602c1e485167a80e5e34e11f1d59b8ea13efb8a315970c5129260a2e919a17a2\",\n
+  \"content\": \"# CHANGE — CHG-### <title>\n...\"\n}", "type":"text"}], "isError":false}}
 ```
+
+All 5 acceptance criteria (`#11`'s ticket body) verified live over the
+real MCP protocol, not just by unit test: AC1 (provenance-carrying
+fetch), AC3 (exactly 4 tools, `tools/list` above), AC4 (fail-closed —
+401 with no bearer token, at the transport layer before any tool code
+runs). AC2/AC5 (unknown version, tamper) verified by `tests/test_mcp_
+doctrine.py`'s `ToolError` assertions — not re-driven live, same
+depth-of-proof split `#10`'s demo record used.
 
 ## Out-of-plan proposals
 

@@ -104,6 +104,35 @@ python3 -m venv .venv && .venv/bin/pip install -r app/requirements.txt
 .venv/bin/python app/server.py     # → http://localhost:5050
 ```
 
+## Doctrine API + MCP tools (#10, #11)
+
+The same content the browser renders is also servable machine-to-machine,
+at an explicit, integrity-checked version — no vendoring, no `latest`
+(see [`ADR-002`](docs/harness/adr/ADR-002-central-doctrine-service.md)).
+
+**HTTP API** (`#10`): `GET /api/doctrine/{version}/manifest` and
+`GET /api/doctrine/{version}/file?path=...`, served by `app/server.py`
+alongside the browser. Every response is sha256-verified against the
+manifest; a mismatch is a 500, never the tampered content.
+
+**MCP tools** (`#11`): four read-only tools —
+`harness_get_template`, `harness_get_gate`, `harness_get_standard`,
+`harness_search_doctrine` — over `streamable-http` only (no stdio: it has
+no per-request identity, which fail-closed authz depends on). Runs as a
+second process in the same container, importing the content-store
+directly.
+
+```bash
+.venv/bin/python app/mcp_server.py     # → http://127.0.0.1:5051/mcp
+claude mcp add --transport http harness-doctrine http://127.0.0.1:5051/mcp
+```
+
+v1 identity is a stub (bearer-token presence = authenticated, no real
+OIDC yet — see `docs/harness/changes/GH-8/THREAT-MODEL.md`'s delta
+review); every tool response still carries `{version, path, sha256}`
+provenance, and a denied or tampered item returns a tool error, never
+content.
+
 ## Quickstart (adopting the harness in a project)
 
 1. Copy `CLAUDE.md`, `docs/harness/OPERATING-PROTOCOL.md`, `.claude/`, `scripts/`, `harness.config.yaml`, `gates/`, `stages/`, `templates/`, and `docs/` (`PHILOSOPHY.md`, `OPERATING-MODEL.md`, `STANDARDS.md`) into your repo (or reference this repo as a submodule). `CLAUDE.md` is the constitution (durable *why*); `OPERATING-PROTOCOL.md` is its required companion (the *how* — commands, mechanics, slash-command reference) — copy both. `gates/`/`stages/`/`templates/` aren't optional: every skill's own header cites them by relative path (e.g. `harness-ideate`: "Playbook: `stages/00-ideation.md`. Template: `templates/IDEA.md`") — skip them and every skill breaks immediately in the fresh repo. (This is today's fallback: ADR-002's target end state serves doctrine centrally instead of vendoring it, but that service isn't live yet — see [`docs/harness/adr/ADR-002-central-doctrine-service.md`](docs/harness/adr/ADR-002-central-doctrine-service.md).)

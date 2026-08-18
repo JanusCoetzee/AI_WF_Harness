@@ -119,8 +119,8 @@ manifest; a mismatch is a 500, never the tampered content.
 `harness_get_template`, `harness_get_gate`, `harness_get_standard`,
 `harness_search_doctrine` — over `streamable-http` only (no stdio: it has
 no per-request identity, which fail-closed authz depends on). Runs as a
-second process in the same container, importing the content-store
-directly.
+second process alongside the browser (`#31`: same container, see
+[below](#try-it-run-the-container-yourself)).
 
 ```bash
 .venv/bin/python app/mcp_server.py     # → http://127.0.0.1:5051/mcp
@@ -131,7 +131,42 @@ v1 identity is a stub (bearer-token presence = authenticated, no real
 OIDC yet — see `docs/harness/changes/GH-8/THREAT-MODEL.md`'s delta
 review); every tool response still carries `{version, path, sha256}`
 provenance, and a denied or tampered item returns a tool error, never
-content.
+content. **This is fine for the local pilot below** (nobody but you can
+reach your own `localhost`) and not yet fine for a shared, network-reachable
+deploy — see that section for why the line is drawn there.
+
+## Try it: run the container yourself
+
+One image, both the browser and the MCP endpoint, proven live under
+`docker --read-only` (`#31`). This is the fastest way to see the harness
+against your own repo without installing anything but Docker:
+
+```bash
+docker build -t harness-doctrine .
+docker run --rm --read-only -p 5050:5050 -p 5051:5051 \
+  -v /path/to/your/repo:/harness:ro -e HARNESS_ROOT=/harness harness-doctrine
+```
+
+- Browser: `http://localhost:5050`
+- MCP: `claude mcp add --transport http harness-doctrine http://localhost:5051/mcp`
+  (or point any MCP-capable client at the same URL)
+
+**Scope of this pilot, on purpose:** run it on your own machine, pointed at
+your own checkout — not on a shared host reachable by anyone else. The
+identity check is a stub (any bearer token is treated as authenticated,
+see above); that's an accepted, deliberate limitation for **local, one-person-
+per-instance use**, not a statement that it's ready for a shared or
+internet-reachable deployment. Real SSO is still required before this runs
+anywhere a stub identity would matter (`docs/harness/changes/GH-8/
+THREAT-MODEL.md`'s Assumption #1) — this pilot doesn't change that, it
+sidesteps it by construction (nobody but you can reach your own `localhost`).
+
+**Found something confusing, wrong, or worth knowing while you're poking at
+it?** File a GitHub issue and tag it `pilot-feedback` — that's the actual
+point of this: real usage surfaces things a design session doesn't. Rough
+edges in the MCP tool responses, gaps in what the browser shows, confusing
+error messages, anything — even "this felt fine" is useful signal if you
+say what you were trying to do.
 
 ## Quickstart (adopting the harness in a project)
 

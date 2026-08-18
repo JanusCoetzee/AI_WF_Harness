@@ -1,0 +1,32 @@
+verify loop @ 69030fd — 2026-08-18T05:54:39Z
+  > typecheck  python3 -m py_compile app/server.py
+  ✓ typecheck  ok (0s)
+  > lint       .venv/bin/ruff check app tests && bash -n scripts/verify.sh scripts/gate-check.sh scripts/evidence-bundle.sh scripts/hooks/*.sh && scripts/audit-decisions.sh && scripts/data-scan.sh
+All checks passed!
+audit-decisions: cross-checking claims against docs/harness/DECISIONS.log
+  ✓ STATE.md claims last gate passed = GC
+  ✓ change GH-12 claims Ratified (GC)
+  ✓ change GH-13 claims Ratified (GC)
+  ✓ change GH-14 claims Ratified (GC)
+  ✓ change GH-15 claims Ratified (GC)
+  ✓ change GH-17 claims Ratified (GC)
+  ✓ change GH-18 claims Ratified (GC)
+  ✓ change GH-19 claims Ratified (GC)
+  ✓ change GH-20 claims Ratified (GC)
+  ✓ change GH-21 claims Ratified (GC)
+  ✓ change GH-25 claims Ratified (GC)
+  ✓ change GH-26 claims Ratified (GC)
+  ✓ change GH-27 claims Ratified (GC)
+  ✓ change GH-28 claims Ratified (GC)
+  ✓ change GH-29 claims Ratified (GC)
+  ✗ UNLOGGED CLAIM: change GH-31 claims Ratified (GC) (no DECISIONS.log line matching /GC passed.*GH-31/)
+  ✓ change GH-6 claims Ratified (GC)
+  ✓ RELEASE-CHECKLIST.md exists (release claimed)
+
+audit-decisions: checking docs/harness/DECISIONS.log chronology
+
+audit-decisions: checking closed-issue claims against GitHub
+  ✗ #31 claimed closed in docs/harness/DECISIONS.log/STATE.md but GitHub reports OPEN
+
+audit-decisions: FAIL (2 unlogged/inconsistent claim(s)) — log them or retract the claims.
+  ✗ lint       FAILED (exit 1) — stopping. Fix before proceeding.

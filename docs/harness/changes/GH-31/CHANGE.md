@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Drafted — awaiting Driver GC approval (CLAUDE.md §7: gate passage is human-only) |
+| Status | Ratified (GC) |
 | Driver | janus |
 | Source (ticket / requester — named) | GitHub issue #31 — scoped 2026-08-18 after "how far are we from a container" surfaced that `#11` was never containerized |
 | Date | 2026-08-18 |
@@ -101,4 +101,4 @@ Revert the commit — `Dockerfile` returns to browser-only, the two new scripts 
 
 ## GC sign-off
 
-T2: Driver approval still needed (session constraint: no gate self-approval, no push/close without checking with the Driver first). On approval, log: `2026-08-18 | GC passed | janus | GH-31`
+T2: Driver. **Approved in-session, 2026-08-18** (not via issue #31 comment — ADR-012's synchronous carve-out: Driver actively present in a live session and chose to render the verdict there; noted on [issue #31](https://github.com/JanusCoetzee/AI_WF_Harness/issues/31#issuecomment-5324195471) for the record). `DECISIONS.log`: `2026-08-18 | GC passed | janus | GH-31`

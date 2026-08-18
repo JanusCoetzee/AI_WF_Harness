@@ -45,6 +45,17 @@ the ticket, not the code:
 3. Hand off: `/harness-change` uses the repaired ticket as its source; the ticket
    key becomes the change ID (use `FIN-4821`, not a parallel `CHG-###`).
 
+## Mode C — mid-build finding (ADR-014)
+
+A feature, significant/platform-level bug, or discrete task found while building
+something else still needs a ticket *before* the fix, per `CLAUDE.md` §5 — but not
+the full Mode A/B ceremony. Use `templates/ISSUE.md`'s own mid-build shortcut (stated
+inline near the top of the template): three lines — what's broken, why it's
+significant, what fixed looks like — skipping the vertical-slice/acceptance-criteria/
+Proof tables unless the fix genuinely needs them. A routine correction made in service
+of the ticket already being built doesn't need this at all — ADR-014 doesn't require
+a ticket for those.
+
 ## Quality bar (reject your own drafts against this)
 
 - A title naming a component is a smell; a title naming a behavior is the standard.
